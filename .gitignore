@@ -19,9 +19,10 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
-# Gradle:
-.idea/**/gradle.xml
-.idea/**/libraries
+# Persistence
+*/META-INF/*
+
+.idea/*
 
 # CMake
 cmake-build-debug/
