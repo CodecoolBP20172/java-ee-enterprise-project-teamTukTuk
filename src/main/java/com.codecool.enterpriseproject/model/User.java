@@ -1,18 +1,23 @@
 package com.codecool.enterpriseproject.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class User {
 
-    String id;
-    String firstName;
-    String lastName;
-    String nickName;
-    Date birthDate;
-    String passWord;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public User(String id, String firstName, String lastName, String nickName, Date birthDate, String passWord) {
-        this.id = id;
+    private String firstName;
+    private String lastName;
+    private String nickName;
+    private Date birthDate;
+    private String passWord;
+    private boolean inConversation = false;
+
+    public User(String firstName, String lastName, String nickName, Date birthDate, String passWord) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;

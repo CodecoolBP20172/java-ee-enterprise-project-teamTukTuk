@@ -1,7 +1,6 @@
 package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.UserController;
-import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -16,8 +15,10 @@ public class Main {
 
         // Always add generic routes to the end
         Spark.get("/register", (Request req, Response res) -> {
-            return new ThymeleafTemplateEngine().render( UserController.renderHomePage(req, res) );
+            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage(req, res) );
         });
+
+
 
     }
 }
