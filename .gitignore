@@ -20,7 +20,7 @@
 .idea/**/uiDesigner.xml
 
 # Persistence
-*/META-INF/*
+src/main/resources/META-INF/*
 
 .idea/*
 
