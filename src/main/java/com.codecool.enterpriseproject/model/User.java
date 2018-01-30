@@ -3,7 +3,9 @@ package com.codecool.enterpriseproject.model;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
+@Table(name="users")
 public class User {
 
     @Id
@@ -12,17 +14,21 @@ public class User {
 
     private String firstName;
     private String lastName;
-    private String nickName;
-    private Date birthDate;
+    private int age;
     private String passWord;
     private boolean inConversation = false;
 
-    public User(String firstName, String lastName, String nickName, Date birthDate, String passWord) {
+    public User(String firstName, String lastName, int age, String passWord) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nickName = nickName;
-        this.birthDate = birthDate;
+        this.age = age;
         this.passWord = passWord;
     }
 
+    public User() {
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 }
