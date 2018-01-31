@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Personality form</title>
+    </head>
+    <body>
+        <form action="/set_personality" method="post">
+            <h1>Let's find your personality type!</h1>
+            <fieldset>
+                <legend>My basic desire is to...</legend>
+                <label for="q1a1">... be good, to have integrity, to be balanced.</label>
+                <input type="radio" name="q1" value="1" id="q1a1">
+                <br/>
+                <label for="q1a2">... feel loved.</label>
+                <input type="radio" name="q1" value="2" id="q1a2">
+                <br/>
+                <label for="q1a3">... feel valuable and worthwhile.</label>
+                <input type="radio" name="q1" value="3" id="q1a3">
+                <br/>
+                <label for="q1a4">... find myself and my significance.</label>
+                <input type="radio" name="q1" value="4" id="q1a4">
+                <br/>
+                <label for="q1a5">... be capable and competent.</label>
+                <input type="radio" name="q1" value="5" id="q1a5">
+                <br/>
+                <label for="q1a6">... have security and support.</label>
+                <input type="radio" name="q1" value="6" id="q1a6">
+                <br/>
+                <label for="q1a7">... be satisfied and content — to have my needs fulfilled.</label>
+                <input type="radio" name="q1" value="7" id="q1a7">
+                <br/>
+                <label for="q1a8">... protect myself, to be in control of my own life and destiny.</label>
+                <input type="radio" name="q1" value="8" id="q1a8">
+                <br/>
+                <label for="q1a9">... have inner stability "peace of mind".</label>
+                <input type="radio" name="q1" value="9" id="q1a9">
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend>My main motivation is to...</legend>
+                <label for="q2a1">... be beyond criticism so as not to be condemned by anyone.</label>
+                <input type="radio" name="q2" value="1" id="q2a1">
+                <br/>
+                <label for="q1a2">... get others to respond to my feelings.</label>
+                <input type="radio" name="q2" value="2" id="q2a2">
+                <br/>
+                <label for="q2a3">... be admired, and to impress others.</label>
+                <input type="radio" name="q2" value="3" id="q2a3">
+                <br/>
+                <label for="q2a4">... attract someone who can "rescue" me.</label>
+                <input type="radio" name="q2" value="4" id="q2a4">
+                <br/>
+                <label for="q2a5">... have everything figured out as a way of defending myself from threats from the environment.</label>
+                <input type="radio" name="q2" value="5" id="q2a5">
+                <br/>
+                <label for="q2a6">... fight against anxiety and insecurity.</label>
+                <input type="radio" name="q2" value="6" id="q2a6">
+                <br/>
+                <label for="q2a7">... avoid and discharge pain.</label>
+                <input type="radio" name="q2" value="7" id="q2a7">
+                <br/>
+                <label for="q2a8">... stay in control of my situation.</label>
+                <input type="radio" name="q2" value="8" id="q2a8">
+                <br/>
+                <label for="q2a9">... resist whatever would upset or disturb me.</label>
+                <input type="radio" name="q2" value="9" id="q2a9">
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend>I want to...</legend>
+                <label for="q3a1">... be right, to be consistent with my ideals.</label>
+                <input type="radio" name="q3" value="1" id="q3a1">
+                <br/>
+                <label for="q3a2">... be needed and appreciated.</label>
+                <input type="radio" name="q3" value="2" id="q3a2">
+                <br/>
+                <label for="q3a3">... be affirmed, to have attention.</label>
+                <input type="radio" name="q3" value="3" id="q3a3">
+                <br/>
+                <label for="q3a4">... take care of my emotional needs before attending to anything else.</label>
+                <input type="radio" name="q3" value="4" id="q3a4">
+                <br/>
+                <label for="q3a5">... understand the environment.</label>
+                <input type="radio" name="q3" value="5" id="q3a5">
+                <br/>
+                <label for="q3a6">... have certitude and reassurance so sometimes I test the attitudes of others toward me.</label>
+                <input type="radio" name="q3" value="6" id="q3a6">
+                <br/>
+                <label for="q3a7">... avoid missing out on worthwhile experiences, keep myself excited and occupied.</label>
+                <input type="radio" name="q3" value="7" id="q3a7">
+                <br/>
+                <label for="q3a8">... be important in their world.</label>
+                <input type="radio" name="q3" value="8" id="q3a8">
+                <br/>
+                <label for="q3a9">... avoid conflicts and tension, to preserve things as they are.</label>
+                <input type="radio" name="q3" value="9" id="q3a9">
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend>My goal is to...</legend>
+                <label for="q4a1">... strive higher and improve everything.</label>
+                <input type="radio" name="q4" value="1" id="q4a1">
+                <br/>
+                <label for="q4a2">... express my feelings for others.</label>
+                <input type="radio" name="q4" value="2" id="q4a2">
+                <br/>
+                <label for="q4a3">... to distinguish myself from others.</label>
+                <input type="radio" name="q4" value="3" id="q4a3">
+                <br/>
+                <label for="q4a4">... express myself and my individuality, to create and surround myself with beauty.</label>
+                <input type="radio" name="q4" value="4" id="q4a4">
+                <br/>
+                <label for="q4a5">... possess knowledge, to understand the environment.</label>
+                <input type="radio" name="q4" value="5" id="q4a5">
+                <br/>
+                <label for="q4a6">... have security, to feel supported by others.</label>
+                <input type="radio" name="q4" value="6" id="q4a6">
+                <br/>
+                <label for="q4a7">... maintain my freedom and happiness.</label>
+                <input type="radio" name="q4" value="7" id="q4a7">
+                <br/>
+                <label for="q4a8">... prove my strength and resist weakness and dominate the environment.</label>
+                <input type="radio" name="q4" value="8" id="q4a8">
+                <br/>
+                <label for="q4a9">... create harmony in my environment.</label>
+                <input type="radio" name="q4" value="9" id="q4a9">
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend>I'm afraid of...</legend>
+                <label for="q5a1">... being corrupt, evil or being defective.</label>
+                <input type="radio" name="q5" value="1" id="q5a1">
+                <br/>
+                <label for="q5a2">... being unwanted, unworthy of being loved.</label>
+                <input type="radio" name="q5" value="2" id="q5a2">
+                <br/>
+                <label for="q5a3">... being worthless.</label>
+                <input type="radio" name="q5" value="3" id="q5a3">
+                <br/>
+                <label for="q5a4">... not having an identity or personal significance.</label>
+                <input type="radio" name="q5" value="4" id="q5a4">
+                <br/>
+                <label for="q5a5">... being useless, helpless, or incapable.</label>
+                <input type="radio" name="q5" value="5" id="q5a5">
+                <br/>
+                <label for="q5a6">... being without support and guidance.</label>
+                <input type="radio" name="q5" value="6" id="q5a6">
+                <br/>
+                <label for="q5a7">... being deprived and in pain.</label>
+                <input type="radio" name="q5" value="7" id="q5a7">
+                <br/>
+                <label for="q5a8">... being harmed or controlled by others.</label>
+                <input type="radio" name="q5" value="8" id="q5a8">
+                <br/>
+                <label for="q5a9">... loss and separation.</label>
+                <input type="radio" name="q5" value="9" id="q5a9">
+                <br/>
+            </fieldset>
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>
