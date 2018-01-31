@@ -21,21 +21,36 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
         EntityManager em = emf.createEntityManager();
 
+        before( "/", (request, response) -> {
+            response.redirect( "/user/page" );
+        } );
+
+        before( "/user/*", (request, response) -> {
+            if(request.session().attribute("id") == null){
+                response.redirect( "/register" );
+                halt("Unauthorized access");
+            }
+        } );
+
         get( "/", (Request req, Response res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
-            User user = new User("anyad", "apad", 37, "titkoskód");
-            dbHandler.addUser( user, em );
 
             return "hello";
         } );
 
+        get("/user/page", (request, response) -> "testpage");
+
         // Always add generic routes to the end
-        get( "/register", (Request req, Response res) -> {
+        get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
+
+        post("/register_user", (request, response) -> {
             UserDbHandler dbHandler = new UserDbHandler();
-            User user = em.find( User.class, 1 );
-            dbHandler.updateUser( user, em );
-            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
-        } );
+            User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ),Integer.parseInt( request.queryParams( "age" ) ) , request.queryParams( "password" ), request.queryParams( "user_email" ), false );
+            System.out.println(request.queryParams( "password" ));
+            dbHandler.addUser( user, em );
+            request.session().attribute( "id", user.getId() );
+            response.redirect( "/" );
+            return "";
+        });
 
 
     }
