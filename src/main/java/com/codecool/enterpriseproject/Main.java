@@ -29,8 +29,6 @@ public class Main {
             return "hello";
         } );
 
-        get ("/test", ((request, response) -> {return "geci";}));
-
         // Always add generic routes to the end
         get( "/register", (Request req, Response res) -> {
             UserDbHandler dbHandler = new UserDbHandler();
