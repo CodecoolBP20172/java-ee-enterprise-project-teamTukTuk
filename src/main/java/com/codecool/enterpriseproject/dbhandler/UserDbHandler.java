@@ -1,11 +1,9 @@
-package com.codecool.enterpriseproject.dbhandler;
+package com.codecool.dbhandler;
 
-import com.codecool.enterpriseproject.model.User;
+import com.codecool.model.User;
 import org.hibernate.criterion.CriteriaQuery;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaUpdate;
 import java.util.List;
 
 public class UserDbHandler {
