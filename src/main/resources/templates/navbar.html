@@ -5,29 +5,13 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid rounded-0">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
+                <li class="active"><a href="/">Dani's dating site</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" data-target="#signUp" class="signup_modal_toggle"><span class="glyphicon glyphicon-user"></span><span class="sign_up_text">Sign Up</span></a></li>
                 <li><a href="#" data-target="#login" class="login_modal_toggle"><span class="glyphicon glyphicon-log-in"></span><span class="login_text">Login</span></a></li>
             </ul>
         </div>
     </nav>
-
-    <div id="register" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Register an account</h4>
-                </div>
-                <div th:replace="register :: register"></div>
-            </div>
-
-        </div>
-    </div>
 
     <div id="login" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -37,7 +21,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Log in</h4>
                 </div>
-                <div class="modal-body">
+                <div id="login_box" class="modal-body">
                     <div th:replace="login :: login"></div>
                 </div>
             </div>
