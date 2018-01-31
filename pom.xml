@@ -14,7 +14,6 @@
        <version.eclipselink>2.6.2</version.eclipselink>
        <version.hibernate.validator>5.1.2.Final</version.hibernate.validator>
        <version.el>3.0.1-b03</version.el>
-       <version.mysql>5.1.21</version.mysql>
        <version.postgres>42.1.1</version.postgres>
        <version.maven.compiler.plugin>3.1</version.maven.compiler.plugin>
        <version.maven.processor.plugin>2.2.4</version.maven.processor.plugin>
