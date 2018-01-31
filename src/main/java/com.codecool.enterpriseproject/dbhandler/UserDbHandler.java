@@ -39,7 +39,7 @@ public class UserDbHandler {
     }
 
     public void updateUser(User user) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisejpa");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
         EntityManager em = emf.createEntityManager();
 
         User mergedUser = em.merge( user );
