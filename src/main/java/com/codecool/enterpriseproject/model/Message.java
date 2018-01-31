@@ -3,6 +3,7 @@ package com.codecool.enterpriseproject.model;
 import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class Message {
 
     @Id
@@ -10,21 +11,24 @@ public class Message {
     private int id;
 
     @ManyToOne
-    private int thread_id;
+    private ChatBox chatBox;
 
-    private Date birth_date;
+    private Date date;
 
     private String message;
 
     @ManyToOne
-    private int user_id;
+    private User user;
 
 
-    public Message(int thread_id, Date birth_date, String message, int user_id) {
-        this.thread_id = thread_id;
-        this.birth_date = birth_date;
+    public Message(ChatBox chatBox, Date date, String message, User user) {
+        this.chatBox = chatBox;
+        this.date = date;
         this.message = message;
-        this.user_id = user_id;
+        this.user = user;
+    }
+
+    public Message() {
     }
 
     public int getId() {
@@ -35,20 +39,20 @@ public class Message {
         this.id = id;
     }
 
-    public int getThread_id() {
-        return thread_id;
+    public ChatBox getChatBox() {
+        return chatBox;
     }
 
-    public void setThread_id(int thread_id) {
-        this.thread_id = thread_id;
+    public void setChatBox(ChatBox chatBox) {
+        this.chatBox = chatBox;
     }
 
-    public Date getBirth_date() {
-        return birth_date;
+    public Date getDate() {
+        return date;
     }
 
-    public void setBirth_date(Date birth_date) {
-        this.birth_date = birth_date;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getMessage() {
@@ -59,22 +63,22 @@ public class Message {
         this.message = message;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
-                ", thread_id=" + thread_id +
-                ", birth_date=" + birth_date +
+                ", thread_id=" + chatBox +
+                ", date=" + date +
                 ", message='" + message + '\'' +
-                ", user_id=" + user_id +
+                ", user_id=" + user +
                 '}';
     }
 }
