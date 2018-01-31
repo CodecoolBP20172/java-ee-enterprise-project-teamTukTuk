@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="signup">
+    <form>
+        <div id="register-form" class="modal-body">
+            <div class="input-group">
+                <input id="email" type="text" name="email" class="register-email" placeholder="E-mail Address" required="true"></input>
+            </div>
+            <div class="input-group">
+                <input id="username" type="text" name="username" class="register-username" placeholder="Username" required="true"></input>
+            </div>
+            <div class="input-group">
+                <input id="password" type="password" name="password" class="register-password" placeholder="Password" required="true"></input>
+            </div>
+            <div class="input-group">
+                <input id="passwordAgain" type="password" name="password_again" class="register-passwordagain" placeholder="Re-enter Password" required="true"></input>
+            </div>
+            <div class="alert alert-danger">
+                <ul>
+                    <li>Passwords do not match!</li>
+                    <li>Username is already taken!</li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-block register-button" type="button">Create Account</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

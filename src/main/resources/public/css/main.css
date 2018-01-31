@@ -1,0 +1,6 @@
+#mainContainer {
+    margin: auto;
+    border: thin solid black;
+    width: 85%;
+    max-width: 1300px;
+}
