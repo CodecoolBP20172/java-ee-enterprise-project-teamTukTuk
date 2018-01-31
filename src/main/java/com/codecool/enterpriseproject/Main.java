@@ -37,6 +37,13 @@ public class Main {
             return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
         } );
 
+        //need to check first if signed in, otherwise should be 404 -Attila
+        get( "/personality_test", (Request req, Response res) -> {
+            return new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) );
+        } );
+
+        post("/set_personality", (Request req, Response res) ->
+                new ThymeleafTemplateEngine().render(UserController.analyzeForm(req, res)));
 
     }
 }
