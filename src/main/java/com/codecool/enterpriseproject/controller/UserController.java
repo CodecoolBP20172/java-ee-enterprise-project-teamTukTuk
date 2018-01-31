@@ -1,4 +1,4 @@
-package com.codecool.controller;
+package com.codecool.enterpriseproject.controller;
 
 import spark.ModelAndView;
 import spark.Request;

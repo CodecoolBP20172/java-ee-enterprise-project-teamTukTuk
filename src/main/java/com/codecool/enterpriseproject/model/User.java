@@ -1,4 +1,4 @@
-package com.codecool.model;
+package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 import java.util.Date;

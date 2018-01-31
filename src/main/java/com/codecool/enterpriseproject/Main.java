@@ -5,30 +5,39 @@ import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.User;
 import spark.Request;
 import spark.Response;
-import spark.Spark;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import static spark.Spark.*;
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Spark.get("/", (req, res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
-            User user = new User( "asadds", "dafafda", 56, "titkos" );
-            dbHandler.addUser( user );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
+        EntityManager em = emf.createEntityManager();
 
-            return "Hello Túrósfasz";
-        });
+        get( "/", (Request req, Response res) -> {
+            UserDbHandler dbHandler = new UserDbHandler();
+            User user = new User("anyad", "apad", 37, "titkoskód");
+            dbHandler.addUser( user, em );
+
+            return "hello";
+        } );
+
+        get ("/test", ((request, response) -> {return "geci";}));
 
         // Always add generic routes to the end
-        Spark.get("/register", (Request req, Response res) -> {
+        get( "/register", (Request req, Response res) -> {
             UserDbHandler dbHandler = new UserDbHandler();
-            User user = dbHandler.findUser( 1 );
-            dbHandler.updateUser(user);
-            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage(req, res) );
-        });
-
+            User user = em.find( User.class, 1 );
+            dbHandler.updateUser( user, em );
+            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
+        } );
 
 
     }
