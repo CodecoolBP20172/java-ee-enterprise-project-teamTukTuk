@@ -3,7 +3,7 @@ package com.codecool.enterpriseproject.model;
 import javax.persistence.*;
 import java.util.Date;
 
-
+@NamedQueries( {@NamedQuery( name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email" )} )
 @Entity
 @Table(name="users")
 public class User {
@@ -25,13 +25,16 @@ public class User {
     private Personality optPartnerPT;
 
     private String passWord;
-    private boolean inConversation = false;
+    private String email;
+    private boolean inConversation;
 
-    public User(String firstName, String lastName, int age, String passWord) {
+    public User(String firstName, String lastName, int age, String passWord, String email, boolean inConversation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.email = email;
         this.passWord = passWord;
+        this.inConversation = inConversation;
     }
 
     public User(String firstName, String lastName, int age, String passWord, int personality, String gender, String partnerGender) {
@@ -51,6 +54,30 @@ public class User {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", passWord='" + passWord + '\'' +
+                ", email='" + email + '\'' +
+                ", inConversation=" + inConversation +
+                '}';
 
     public void setOptPartnerPT(int personality) {
         switch (personality) {
@@ -91,5 +118,6 @@ public class User {
                 this.optPartnerPT = partnerGender.equals("Male") ? Personality.ENTHUSIAST : Personality.CHALLENGER;
                 break;
         }
+
     }
 }
