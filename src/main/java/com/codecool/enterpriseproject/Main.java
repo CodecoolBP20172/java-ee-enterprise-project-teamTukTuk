@@ -2,9 +2,10 @@ package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.UserController;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
-import com.codecool.enterpriseproject.model.Personality;
+import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.model.User;
-import spark.ModelAndView;
+import com.codecool.enterpriseproject.model.ChatBox;
+
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -13,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import java.util.HashMap;
+import java.util.Date;
 
 import static spark.Spark.*;
 
@@ -40,22 +41,35 @@ public class Main {
             }
         } );
 
-        get( "/", (Request req, Response res) -> {
-
-            return "hello";
-        } );
 
         get("/user/page", (request, response) -> "testpage");
 
         // Always add generic routes to the end
-        get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
+        get( "/register", (Request req, Response res) -> {
+            User user = em.find( User.class, 1 );
+            dbHandler.updateUser( user, em );
+            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
+        } );
+
+        get("/testChat", (Request req, Response res) -> {
+            User sanyika = new User("sanyika", "abarótistartvből", "sanyika@email.com", 17,"pass", 1, "Male", "Female");
+            User jolika = new User("jolika", "sanyiszerelme", "jolika@email.com", 16,"pass", 3, "Female", "Male");
+            dbHandler.add(sanyika, em);
+            dbHandler.add(jolika, em);
+            ChatBox chatBox = new ChatBox(sanyika, jolika);
+            Message sanyiÜzenete = new Message(chatBox, new Date(), "ez a message", sanyika);
+            dbHandler.add(chatBox, em);
+            dbHandler.add(sanyiÜzenete, em);
+            return "siker";
+        });
+
+        //get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
         post("/register_user", (request, response) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
             if (request.queryParams( "password" ).equals( request.queryParams( "password_again" ) )) {
                 User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ),Integer.parseInt( request.queryParams( "age" ) ) , request.queryParams( "password" ), request.queryParams( "email" ), false );
                 System.out.println(request.queryParams( "password" ));
-                dbHandler.addUser( user, em );
+                dbHandler.add( user, em );
                 request.session().attribute( "id", user.getId() );
                 response.redirect( "/" );
             } else {
@@ -68,7 +82,6 @@ public class Main {
         post("/login", (request, response) -> {
             String userEmail = request.queryParams( "email" );
             String pswd = request.queryParams( "password" );
-            UserDbHandler dbHandler = new UserDbHandler();
             User user = dbHandler.findUserByUserName( em, userEmail );
             if (user != null) {
                 if (pswd.equals( user.getPassWord() )) {
@@ -94,12 +107,12 @@ public class Main {
 
     }
 
-
     private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
-        dbHandler.addUser( new User("John", "Johnson", 37, "pass", 1, "Male", "Female"), em );
-        dbHandler.addUser( new User("Maria", "Johnes", 28, "pass", 2, "Female", "Male"), em );
-        dbHandler.addUser( new User("Eduardo", "Silva", 48, "pass", 3, "Male", "Female"), em );
-        dbHandler.addUser( new User("Jane", "Jacobs", 32, "pass", 8, "Female", "Male"), em );
-        dbHandler.addUser( new User("Gupta", "Aditi", 40, "pass", 9, "Male", "Female"), em );
+        dbHandler.add( new User("John", "Johnson", "email@gmail.com", 37, "pass",  1, "Male", "Female"), em );
+        dbHandler.add( new User("Maria", "Johnes", "email2@gmail.com", 36, "pass",  2, "Female", "Male"), em );
+        dbHandler.add( new User("Eduardo", "Silva", "email3@gmail.com", 48, "pass",  3, "Male", "Female"), em );
+        dbHandler.add( new User("Jane", "Jacobs","email4@gmail.com", 32, "pass", 8, "Female", "Male"), em );
+        dbHandler.add( new User("Gupta", "Aditi", "email5@gmail.com", 40, "pass", 9, "Male", "Female"), em );
     }
+
 }

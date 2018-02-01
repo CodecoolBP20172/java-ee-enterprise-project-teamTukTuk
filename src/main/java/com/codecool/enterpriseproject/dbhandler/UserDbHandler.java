@@ -10,14 +10,15 @@ import java.util.List;
 public class UserDbHandler {
 
 
-    public void addUser(User user, EntityManager em) {
+    public void add(Object object, EntityManager em) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        em.persist( user );
+        em.persist( object );
         transaction.commit();
 
     }
 
+    //TODO make this method dynamic
     public void updateUser(User user, EntityManager em) {
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();

@@ -37,11 +37,13 @@ public class User {
         this.inConversation = inConversation;
     }
 
-    public User(String firstName, String lastName, int age, String passWord, int personality, String gender, String partnerGender) {
+    public User(String firstName, String lastName,String email, int age, String passWord, int personality, String gender, String partnerGender) {
         //to create test users
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.email = email;
         this.passWord = passWord;
         this.gender = gender;
         this.partnerGender = partnerGender;
@@ -69,16 +71,16 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", passWord='" + passWord + '\'' +
-                ", email='" + email + '\'' +
-                ", inConversation=" + inConversation +
-                '}';
-
+            return "User{" +
+                    "id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", age=" + age +
+                    ", passWord='" + passWord + '\'' +
+                    ", email='" + email + '\'' +
+                    ", inConversation=" + inConversation +
+                    '}';
+        }
     public void setOptPartnerPT(int personality) {
         switch (personality) {
             case 1 :
@@ -118,6 +120,5 @@ public class User {
                 this.optPartnerPT = partnerGender.equals("Male") ? Personality.ENTHUSIAST : Personality.CHALLENGER;
                 break;
         }
-
     }
 }
