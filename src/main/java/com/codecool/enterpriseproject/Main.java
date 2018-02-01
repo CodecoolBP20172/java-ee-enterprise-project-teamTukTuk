@@ -28,7 +28,7 @@ public class Main {
 
         before( "/user/*", UserController::checkIfInSession );
 
-        get( "/user/page", (request, response) -> "testpage" );
+        get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, dbHandler, em)) );
 
         get( "/testChat", (Request req, Response res) -> ChatController.renderTestChat( dbHandler, em ) );
 
@@ -42,7 +42,7 @@ public class Main {
         get( "/personality_test", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) ) );
 
         post( "/set_personality", (Request req, Response res) ->
-                new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res ) ) );
+                new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , em, dbHandler) ) );
     }
 
     private static void populateDb(UserDbHandler dbHandler, EntityManager em) {

@@ -2,7 +2,9 @@ package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 
-@NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email")})
+@NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email"),
+@NamedQuery(name = "user.getUserById", query = "SELECT u FROM User AS u WHERE u.id = :id"),
+@NamedQuery(name="user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers")})
 @Entity
 @Table(name = "users")
 public class User {
@@ -79,6 +81,22 @@ public class User {
                 ", email='" + email + '\'' +
                 ", inConversation=" + inConversation +
                 '}';
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Personality getOptPartnerPT() {
+        return optPartnerPT;
+    }
+
+    public Personality getPersonalityType() {
+        return personalityType;
     }
 
     public void setPersonalities(int personality) {
