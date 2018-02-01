@@ -5,6 +5,10 @@ body {
     margin: auto;
 }
 
+legend {
+    padding-top: 5%;
+}
+
 .navbar-inverse {
     border-radius: 0;
 }
@@ -26,7 +30,23 @@ body {
     border-radius: 2px;
 }
 
+#registration_form {
+    padding: 5% 10%;
+}
+
+#personality_form_box {
+    background-color: white;
+    padding: 30px;
+    box-shadow: 1px 1px 25px black;
+    border-radius: 2px;
+}
+
 #register_box h4 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form_header {
     text-align: center;
     margin-bottom: 15px;
 }
