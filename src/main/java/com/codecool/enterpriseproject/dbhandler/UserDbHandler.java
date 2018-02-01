@@ -19,11 +19,11 @@ public class UserDbHandler {
     }
 
     //TODO make this method dynamic
-    public void updateUser(User user, EntityManager em) {
+    public void updateUserPersonality(User user, EntityManager em, int personality) {
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        mergedUser.setFirstName( "ok" );
+        mergedUser.setPersonalities( personality );
         transaction.commit();
     }
 

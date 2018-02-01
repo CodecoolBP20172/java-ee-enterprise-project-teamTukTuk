@@ -64,12 +64,14 @@ public class UserController {
     }
 
 
-    public static Object analyzeForm(Request req, Response res) {
+    public static Object analyzeForm(Request req, Response res, EntityManager em, UserDbHandler dbHandler) {
         //TODO validate input
 
         //TODO analise the result and set personality
         //personality is found here, but need to set it for the user
+        User user = em.find( User.class, req.session().id() );
         int personalityType = findPersonality( req );
+        dbHandler.updateUserPersonality(user, em, personalityType );
         System.out.println( "personality type of the user: " + personalityType );
 
         //TODO popup thx for filling the form
