@@ -1,9 +1,7 @@
 package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.UserController;
-import com.codecool.enterpriseproject.dbhandler.MessageDbHandler;
-import com.codecool.enterpriseproject.dbhandler.ThreadDbHandler;
-import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.dbhandler.DbHandler;
 import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.model.ChatBox;
@@ -28,34 +26,31 @@ public class Main {
         EntityManager em = emf.createEntityManager();
 
         get( "/", (Request req, Response res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
-            User user = new User("anyad", "apad", 37, "titkoskód");
-            dbHandler.addUser( user, em );
+            DbHandler dbHandler = new DbHandler();
+            User user = new User("anyad", "apad", 37, "titkoskód", false, "male", "female", "personality");
+            dbHandler.add( user, em );
 
             return "hello";
         } );
 
         // Always add generic routes to the end
         get( "/register", (Request req, Response res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
+            DbHandler dbHandler = new DbHandler();
             User user = em.find( User.class, 1 );
             dbHandler.updateUser( user, em );
             return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
         } );
 
         get("/testChat", (Request req, Response res) -> {
-            UserDbHandler userDbHandler = new UserDbHandler();
-            ThreadDbHandler threadHandler = new ThreadDbHandler();
-            MessageDbHandler messageHandler = new MessageDbHandler();
-            User sanyika = new User("sanyika", "abarótistartvből", 19, "gyererámpénz");
-            User jolika = new User("jolika", "sanyiszerelme", 17, "adjálpénztsanyi");
-            userDbHandler.addUser(sanyika, em);
-            userDbHandler.addUser(jolika, em);
+            DbHandler dbHandler = new DbHandler();
+            User sanyika = new User("sanyika", "abarótistartvből", 19, "gyererámpénz",false, "male", "female", "personality");
+            User jolika = new User("jolika", "sanyiszerelme", 17, "adjálpénztsanyi",false, "female", "male", "personality");
+            dbHandler.add(sanyika, em);
+            dbHandler.add(jolika, em);
             ChatBox chatBox = new ChatBox(sanyika, jolika);
             Message sanyiÜzenete = new Message(chatBox, new Date(), "ez a message", sanyika);
-            threadHandler.addThread(chatBox, em);
-            messageHandler.addMessage(sanyiÜzenete, em);
-
+            dbHandler.add(chatBox, em);
+            dbHandler.add(sanyiÜzenete, em);
             return "siker";
         });
 
