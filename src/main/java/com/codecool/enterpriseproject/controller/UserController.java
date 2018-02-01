@@ -121,6 +121,7 @@ public class UserController {
         Personality pers = user.getPersonalityType();
         Personality optPers = user.getOptPartnerPT();
         User optUser = dbHandler.findUserByPersonality(em, optPers);
+        String optName = optUser.getFirstName();
         params.put("currenUser", user);
         params.put("match", optUser);
 

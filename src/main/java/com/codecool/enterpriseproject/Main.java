@@ -23,8 +23,6 @@ public class Main {
         EntityManager em = emf.createEntityManager();
 
         UserDbHandler dbHandler = new UserDbHandler();
-        populateDb( dbHandler, em );
-
 
         before( "/user/*", UserController::checkIfInSession );
 
@@ -45,12 +43,6 @@ public class Main {
                 new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , em, dbHandler) ) );
     }
 
-    private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
-        dbHandler.add( new User( "John", "Johnson", "email@gmail.com", 37, "pass", 1, "Male", "Female" ), em );
-        dbHandler.add( new User( "Maria", "Johnes", "email2@gmail.com", 36, "pass", 2, "Female", "Male" ), em );
-        dbHandler.add( new User( "Eduardo", "Silva", "email3@gmail.com", 48, "pass", 3, "Male", "Female" ), em );
-        dbHandler.add( new User( "Jane", "Jacobs", "email4@gmail.com", 32, "pass", 8, "Female", "Male" ), em );
-        dbHandler.add( new User( "Gupta", "Aditi", "email5@gmail.com", 40, "pass", 9, "Male", "Female" ), em );
+
     }
 
-}
