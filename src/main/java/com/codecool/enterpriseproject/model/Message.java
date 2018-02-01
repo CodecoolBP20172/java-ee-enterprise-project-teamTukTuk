@@ -12,9 +12,7 @@ public class Message {
 
     @ManyToOne
     private ChatBox chatBox;
-
     private Date date;
-
     private String message;
 
     @ManyToOne

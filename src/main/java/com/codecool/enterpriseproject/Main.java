@@ -1,11 +1,9 @@
 package com.codecool.enterpriseproject;
 
+import com.codecool.enterpriseproject.controller.ChatController;
 import com.codecool.enterpriseproject.controller.UserController;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
-import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.model.User;
-import com.codecool.enterpriseproject.model.ChatBox;
-
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -14,105 +12,45 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import java.util.Date;
-
 import static spark.Spark.*;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        staticFileLocation("/public");
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
+        staticFileLocation( "/public" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "enterprisePU" );
         EntityManager em = emf.createEntityManager();
 
         UserDbHandler dbHandler = new UserDbHandler();
-        populateDb(dbHandler, em);
-      
-      
-        before( "/", (request, response) -> {
-            response.redirect( "/user/page" );
-        } );
-
-        before( "/user/*", (request, response) -> {
-            if(request.session().attribute("id") == null){
-                response.redirect( "/register" );
-                halt("Unauthorized access");
-            }
-        } );
+        populateDb( dbHandler, em );
 
 
-        get("/user/page", (request, response) -> "testpage");
+        before( "/user/*", UserController::checkIfInSession );
 
-        // Always add generic routes to the end
-        get( "/register", (Request req, Response res) -> {
-            User user = em.find( User.class, 1 );
-            dbHandler.updateUser( user, em );
-            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
-        } );
+        get( "/user/page", (request, response) -> "testpage" );
 
-        get("/testChat", (Request req, Response res) -> {
-            User sanyika = new User("sanyika", "abarótistartvből", "sanyika@email.com", 17,"pass", 1, "Male", "Female");
-            User jolika = new User("jolika", "sanyiszerelme", "jolika@email.com", 16,"pass", 3, "Female", "Male");
-            dbHandler.add(sanyika, em);
-            dbHandler.add(jolika, em);
-            ChatBox chatBox = new ChatBox(sanyika, jolika);
-            Message sanyiÜzenete = new Message(chatBox, new Date(), "ez a message", sanyika);
-            dbHandler.add(chatBox, em);
-            dbHandler.add(sanyiÜzenete, em);
-            return "siker";
-        });
+        get( "/testChat", (Request req, Response res) -> ChatController.renderTestChat( dbHandler, em ) );
 
-        //get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
+        get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
-        post("/register_user", (request, response) -> {
-            if (request.queryParams( "password" ).equals( request.queryParams( "password_again" ) )) {
-                User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ),Integer.parseInt( request.queryParams( "age" ) ) , request.queryParams( "password" ), request.queryParams( "email" ), false );
-                System.out.println(request.queryParams( "password" ));
-                dbHandler.add( user, em );
-                request.session().attribute( "id", user.getId() );
-                response.redirect( "/" );
-            } else {
-                return "rossz pw";
-            }
+        post( "/register_user", (Request request, Response response) -> UserController.registeringWithValidate( request, response, dbHandler, em ) );
 
-            return "";
-        });
-
-        post("/login", (request, response) -> {
-            String userEmail = request.queryParams( "email" );
-            String pswd = request.queryParams( "password" );
-            User user = dbHandler.findUserByUserName( em, userEmail );
-            if (user != null) {
-                if (pswd.equals( user.getPassWord() )) {
-                    request.session().attribute( "id", user.getId() );
-                    response.redirect( "/" );
-                }
-                return "kaki";
-            }
-            return "";
-        });
-
-
-        // Always add generic routes to the end
-  
+        post( "/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, em ) );
 
         //need to check first if signed in, otherwise should be 404 -Attila
-        get( "/personality_test", (Request req, Response res) -> {
-            return new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) );
-        } );
+        get( "/personality_test", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) ) );
 
-        post("/set_personality", (Request req, Response res) ->
-                new ThymeleafTemplateEngine().render(UserController.analyzeForm(req, res)));
-
+        post( "/set_personality", (Request req, Response res) ->
+                new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res ) ) );
     }
 
     private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
-        dbHandler.add( new User("John", "Johnson", "email@gmail.com", 37, "pass",  1, "Male", "Female"), em );
-        dbHandler.add( new User("Maria", "Johnes", "email2@gmail.com", 36, "pass",  2, "Female", "Male"), em );
-        dbHandler.add( new User("Eduardo", "Silva", "email3@gmail.com", 48, "pass",  3, "Male", "Female"), em );
-        dbHandler.add( new User("Jane", "Jacobs","email4@gmail.com", 32, "pass", 8, "Female", "Male"), em );
-        dbHandler.add( new User("Gupta", "Aditi", "email5@gmail.com", 40, "pass", 9, "Male", "Female"), em );
+        dbHandler.add( new User( "John", "Johnson", "email@gmail.com", 37, "pass", 1, "Male", "Female" ), em );
+        dbHandler.add( new User( "Maria", "Johnes", "email2@gmail.com", 36, "pass", 2, "Female", "Male" ), em );
+        dbHandler.add( new User( "Eduardo", "Silva", "email3@gmail.com", 48, "pass", 3, "Male", "Female" ), em );
+        dbHandler.add( new User( "Jane", "Jacobs", "email4@gmail.com", 32, "pass", 8, "Female", "Male" ), em );
+        dbHandler.add( new User( "Gupta", "Aditi", "email5@gmail.com", 40, "pass", 9, "Male", "Female" ), em );
     }
 
 }
