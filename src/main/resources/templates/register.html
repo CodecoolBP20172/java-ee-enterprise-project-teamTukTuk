@@ -17,12 +17,24 @@
                    required="true"/>
 
             <input id="age" type="number" name="age" placeholder="Your age" required="required"/>
-            <p>I am...</p>
-            <input type="radio" value="Male" name="gender"/> male
-            <input type="radio" value="Female" name="gender"/> female
-            <p>Looking for...</p>
-            <input type="radio" value="Male" name="preference"/> male
-            <input type="radio" value="Female" name="preference"/> female
+            <div class='radio_box'>
+                <p>I am...</p>
+                <div class="radio">
+                    <label><input type="radio" name="gender" value="male"/>Male</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="gender" value="female"/>Female</label>
+                  </div>
+            </div>
+            <div class="radio_box">
+                <p>Looking for...</p>
+                <div class="radio">
+                    <label><input type="radio" name="preference" value="male"/>Male</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="preference" value="female"/>Female</label>
+                  </div>
+            </div>
 
         </div>
         <!--<div class="alert alert-danger">
