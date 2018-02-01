@@ -3,7 +3,7 @@ package com.codecool.enterpriseproject.model;
 import javax.persistence.*;
 import java.util.Date;
 
-
+@NamedQueries( {@NamedQuery( name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email" )} )
 @Entity
 @Table(name="users")
 public class User {
@@ -37,5 +37,26 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", passWord='" + passWord + '\'' +
+                ", email='" + email + '\'' +
+                ", inConversation=" + inConversation +
+                '}';
     }
 }

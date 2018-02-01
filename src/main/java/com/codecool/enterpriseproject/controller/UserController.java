@@ -14,6 +14,6 @@ public class UserController {
     public static ModelAndView renderRegisterPage(Request req, Response res) {
         Map params = new HashMap<>();
 
-        return new ModelAndView(params, "/registration");
+        return new ModelAndView(params, "/index");
     }
 }
