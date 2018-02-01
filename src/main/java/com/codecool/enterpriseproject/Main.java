@@ -44,12 +44,6 @@ public class Main {
 
         get("/user/page", (request, response) -> "testpage");
 
-        // Always add generic routes to the end
-        get( "/register", (Request req, Response res) -> {
-            User user = em.find( User.class, 1 );
-            dbHandler.updateUser( user, em );
-            return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
-        } );
 
         get("/testChat", (Request req, Response res) -> {
             User sanyika = new User("sanyika", "abarótistartvből", "sanyika@email.com", 17,"pass", 1, "Male", "Female");
@@ -63,11 +57,11 @@ public class Main {
             return "siker";
         });
 
-        //get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
+        get( "/register", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
         post("/register_user", (request, response) -> {
             if (request.queryParams( "password" ).equals( request.queryParams( "password_again" ) )) {
-                User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ),Integer.parseInt( request.queryParams( "age" ) ) , request.queryParams( "password" ), request.queryParams( "email" ), false );
+                User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ),Integer.parseInt( request.queryParams( "age" ) ) , request.queryParams( "password" ), request.queryParams( "email" ), false, request.queryParams( "gender" ), request.queryParams( "preference" ) );
                 System.out.println(request.queryParams( "password" ));
                 dbHandler.add( user, em );
                 request.session().attribute( "id", user.getId() );
@@ -86,7 +80,7 @@ public class Main {
             if (user != null) {
                 if (pswd.equals( user.getPassWord() )) {
                     request.session().attribute( "id", user.getId() );
-                    response.redirect( "/" );
+                    response.redirect( "/personality_test" );
                 }
                 return "kaki";
             }

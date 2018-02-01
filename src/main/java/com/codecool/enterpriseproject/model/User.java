@@ -28,13 +28,15 @@ public class User {
     private String email;
     private boolean inConversation;
 
-    public User(String firstName, String lastName, int age, String passWord, String email, boolean inConversation) {
+    public User(String firstName, String lastName, int age, String passWord, String email, boolean inConversation, String gender, String partnerGender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.passWord = passWord;
         this.inConversation = inConversation;
+        this.gender = gender;
+        this.partnerGender = partnerGender;
     }
 
     public User(String firstName, String lastName,String email, int age, String passWord, int personality, String gender, String partnerGender) {
@@ -47,7 +49,7 @@ public class User {
         this.passWord = passWord;
         this.gender = gender;
         this.partnerGender = partnerGender;
-        setOptPartnerPT(personality);
+        setPersonalities(personality);
     }
 
     public User() {
@@ -81,7 +83,7 @@ public class User {
                     ", inConversation=" + inConversation +
                     '}';
         }
-    public void setOptPartnerPT(int personality) {
+    public void setPersonalities(int personality) {
         switch (personality) {
             case 1 :
                 this.personalityType = Personality.REFORMER;

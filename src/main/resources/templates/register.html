@@ -5,17 +5,25 @@
     <h4>Register now!</h4>
     <form action="/register_user" method="post">
         <div class="input-group">
-            <input id="email" type="text" name="email" placeholder="E-mail Address" required="true"></input>
-        
-            <input id="first_name" type="text" name="first_name" placeholder="First Name" required="true"></input>
-        
-            <input id="last_name" type="text" name="last_name" placeholder="Last Name" required="true"></input>
+            <input id="email" type="text" name="email" placeholder="E-mail Address" required="true"/>
 
-            <input id="password" type="password" name="password" placeholder="Password" required="true"></input>
-       
-            <input id="passwordAgain" type="password" name="password_again" placeholder="Re-enter Password" required="true"></input>
+            <input id="first_name" type="text" name="first_name" placeholder="First Name" required="true"/>
 
-            <input id="age" type="number" name="age" required="required"/>
+            <input id="last_name" type="text" name="last_name" placeholder="Last Name" required="true"/>
+
+            <input id="password" type="password" name="password" placeholder="Password" required="true"/>
+
+            <input id="passwordAgain" type="password" name="password_again" placeholder="Re-enter Password"
+                   required="true"/>
+
+            <input id="age" type="number" name="age" placeholder="Your age" required="required"/>
+            <p>I am...</p>
+            <input type="radio" value="Male" name="gender"/> male
+            <input type="radio" value="Female" name="gender"/> female
+            <p>Looking for...</p>
+            <input type="radio" value="Male" name="preference"/> male
+            <input type="radio" value="Female" name="preference"/> female
+
         </div>
         <!--<div class="alert alert-danger">
             <ul>
