@@ -21,17 +21,15 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
         EntityManager em = emf.createEntityManager();
 
-        get( "/", (Request req, Response res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
-            User user = new User("anyad", "apad", 37, "titkoskód");
-            dbHandler.addUser( user, em );
+        UserDbHandler dbHandler = new UserDbHandler();
+        populateDb(dbHandler, em);
 
+        get( "/", (Request req, Response res) -> {
             return "hello";
         } );
 
         // Always add generic routes to the end
         get( "/register", (Request req, Response res) -> {
-            UserDbHandler dbHandler = new UserDbHandler();
             User user = em.find( User.class, 1 );
             dbHandler.updateUser( user, em );
             return new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) );
@@ -45,5 +43,13 @@ public class Main {
         post("/set_personality", (Request req, Response res) ->
                 new ThymeleafTemplateEngine().render(UserController.analyzeForm(req, res)));
 
+    }
+
+    private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
+        dbHandler.addUser( new User("John", "Johnson", 37, "pass"), em );
+        dbHandler.addUser( new User("Maria", "Johnes", 28, "pass"), em );
+        dbHandler.addUser( new User("Eduardo", "Silva", 48, "pass"), em );
+        dbHandler.addUser( new User("Jane", "Jacobs", 32, "pass"), em );
+        dbHandler.addUser( new User("Gupta", "Aditi", 40, "pass"), em );
     }
 }

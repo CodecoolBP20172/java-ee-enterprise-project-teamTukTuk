@@ -48,7 +48,7 @@ public class UserController {
         return mostFrequent(answers);
     }
 
-    public static Integer mostFrequent(List<Integer> list) {
+    private static Integer mostFrequent(List<Integer> list) {
         Map<Integer, Integer> counterMap = new HashMap<>();
         Integer maxValue = 0;
         Integer mostFrequentValue = null;
