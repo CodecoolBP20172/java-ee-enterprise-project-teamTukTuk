@@ -2,6 +2,7 @@ package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.UserController;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 import spark.ModelAndView;
 import spark.Request;
@@ -48,18 +49,12 @@ public class Main {
                 new ThymeleafTemplateEngine().render(UserController.analyzeForm(req, res)));
 
     }
-        // should always be the last route
-        get( "/", (Request req, Response res) -> {
-            HashMap params = new HashMap();
-            return new ThymeleafTemplateEngine().render(new ModelAndView(params, "index"));
-        } );
-
 
     private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
-        dbHandler.addUser( new User("John", "Johnson", 37, "pass"), em );
-        dbHandler.addUser( new User("Maria", "Johnes", 28, "pass"), em );
-        dbHandler.addUser( new User("Eduardo", "Silva", 48, "pass"), em );
-        dbHandler.addUser( new User("Jane", "Jacobs", 32, "pass"), em );
-        dbHandler.addUser( new User("Gupta", "Aditi", 40, "pass"), em );
+        dbHandler.addUser( new User("John", "Johnson", 37, "pass", 1, "Male", "Female"), em );
+        dbHandler.addUser( new User("Maria", "Johnes", 28, "pass", 2, "Female", "Male"), em );
+        dbHandler.addUser( new User("Eduardo", "Silva", 48, "pass", 3, "Male", "Female"), em );
+        dbHandler.addUser( new User("Jane", "Jacobs", 32, "pass", 8, "Female", "Male"), em );
+        dbHandler.addUser( new User("Gupta", "Aditi", 40, "pass", 9, "Male", "Female"), em );
     }
 }
