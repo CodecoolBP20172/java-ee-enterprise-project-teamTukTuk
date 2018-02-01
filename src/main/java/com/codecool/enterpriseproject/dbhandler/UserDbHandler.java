@@ -4,8 +4,10 @@ import com.codecool.enterpriseproject.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import java.util.List;
 
-public class DbHandler {
+public class UserDbHandler {
 
 
     public void add(Object object, EntityManager em) {
@@ -23,6 +25,20 @@ public class DbHandler {
         transaction.begin();
         mergedUser.setFirstName( "ok" );
         transaction.commit();
+    }
+
+    public User findUserByUserName(EntityManager em, String email ) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        Query query = em.createNamedQuery( "user.getUserByEmail", User.class );
+        query.setParameter( "email", email );
+        List user = query.getResultList();
+        Object obj = null;
+        if(!user.isEmpty()){
+            obj = user.get(0);
+        }
+        transaction.commit();
+        return (User) obj;
     }
 
 
