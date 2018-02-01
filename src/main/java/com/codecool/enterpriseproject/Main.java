@@ -2,6 +2,7 @@ package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.UserController;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 import spark.ModelAndView;
 import spark.Request;
@@ -24,7 +25,10 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("enterprisePU");
         EntityManager em = emf.createEntityManager();
 
-
+        UserDbHandler dbHandler = new UserDbHandler();
+        populateDb(dbHandler, em);
+      
+      
         before( "/", (request, response) -> {
             response.redirect( "/user/page" );
         } );
@@ -76,9 +80,26 @@ public class Main {
             return "";
         });
 
-        // should always be the last route
+
+        // Always add generic routes to the end
+  
+
+        //need to check first if signed in, otherwise should be 404 -Attila
+        get( "/personality_test", (Request req, Response res) -> {
+            return new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) );
+        } );
+
+        post("/set_personality", (Request req, Response res) ->
+                new ThymeleafTemplateEngine().render(UserController.analyzeForm(req, res)));
+
+    }
 
 
-
+    private static void populateDb(UserDbHandler dbHandler, EntityManager em) {
+        dbHandler.addUser( new User("John", "Johnson", 37, "pass", 1, "Male", "Female"), em );
+        dbHandler.addUser( new User("Maria", "Johnes", 28, "pass", 2, "Female", "Male"), em );
+        dbHandler.addUser( new User("Eduardo", "Silva", 48, "pass", 3, "Male", "Female"), em );
+        dbHandler.addUser( new User("Jane", "Jacobs", 32, "pass", 8, "Female", "Male"), em );
+        dbHandler.addUser( new User("Gupta", "Aditi", 40, "pass", 9, "Male", "Female"), em );
     }
 }
