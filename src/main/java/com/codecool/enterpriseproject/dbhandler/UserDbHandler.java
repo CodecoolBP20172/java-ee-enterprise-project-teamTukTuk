@@ -19,23 +19,23 @@ public class UserDbHandler {
     }
 
     //TODO make this method dynamic
-    public void updateUser(User user, EntityManager em) {
+    public void updateUserPersonality(User user, EntityManager em, int personality) {
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        mergedUser.setFirstName( "ok" );
+        mergedUser.setPersonalities( personality );
         transaction.commit();
     }
 
-    public User findUserByUserName(EntityManager em, String email ) {
+    public User findUserByUserName(EntityManager em, String email) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "user.getUserByEmail", User.class );
         query.setParameter( "email", email );
         List user = query.getResultList();
         Object obj = null;
-        if(!user.isEmpty()){
-            obj = user.get(0);
+        if (!user.isEmpty()) {
+            obj = user.get( 0 );
         }
         transaction.commit();
         return (User) obj;
