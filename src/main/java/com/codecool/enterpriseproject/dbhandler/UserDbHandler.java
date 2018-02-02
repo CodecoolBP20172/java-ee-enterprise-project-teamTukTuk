@@ -1,5 +1,6 @@
 package com.codecool.enterpriseproject.dbhandler;
 
+import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 
 import javax.persistence.EntityManager;
@@ -19,11 +20,11 @@ public class UserDbHandler {
     }
 
     //TODO make this method dynamic
-    public void updateUser(User user, EntityManager em) {
+    public void updateUserPersonality(User user, EntityManager em, int personality) {
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        mergedUser.setFirstName( "ok" );
+        mergedUser.setPersonalities( personality );
         transaction.commit();
     }
 
@@ -40,6 +41,21 @@ public class UserDbHandler {
         transaction.commit();
         return (User) obj;
     }
+
+    public User findUserByPersonality(EntityManager em, Personality pers) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        Query query = em.createNamedQuery( "user.getUserByPersonality", User.class );
+        query.setParameter( "pers", pers );
+        List user = query.getResultList();
+        Object obj = null;
+        if (!user.isEmpty()) {
+            obj = user.get( 0 );
+        }
+        transaction.commit();
+        return (User) obj;
+    }
+
 
 
 }

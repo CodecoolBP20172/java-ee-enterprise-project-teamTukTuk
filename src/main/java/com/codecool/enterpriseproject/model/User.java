@@ -2,7 +2,9 @@ package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 
-@NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email")})
+@NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email"),
+@NamedQuery(name = "user.getUserById", query = "SELECT u FROM User AS u WHERE u.id = :id"),
+@NamedQuery(name="user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers")})
 @Entity
 @Table(name = "users")
 public class User {
@@ -81,19 +83,36 @@ public class User {
                 '}';
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Personality getOptPartnerPT() {
+        return optPartnerPT;
+    }
+
+    public Personality getPersonalityType() {
+        return personalityType;
+    }
+
     public void setPersonalities(int personality) {
+        //throws 500 if optimal personality type is not in db
         switch (personality) {
             case 1:
                 this.personalityType = Personality.REFORMER;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.ACHIEVER : Personality.INVESTIGATOR;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ACHIEVER : Personality.INVESTIGATOR;
                 break;
             case 2:
                 this.personalityType = Personality.HELPER;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.LOYALIST : Personality.ACHIEVER;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.LOYALIST : Personality.ACHIEVER;
                 break;
             case 3:
                 this.personalityType = Personality.ACHIEVER;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.HELPER : Personality.REFORMER;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.HELPER : Personality.REFORMER;
                 break;
             case 4:
                 this.personalityType = Personality.INDIVIDUALIST;
@@ -101,23 +120,23 @@ public class User {
                 break;
             case 5:
                 this.personalityType = Personality.INVESTIGATOR;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.REFORMER : Personality.ENTHUSIAST;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.REFORMER : Personality.ENTHUSIAST;
                 break;
             case 6:
                 this.personalityType = Personality.LOYALIST;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.CHALLENGER : Personality.HELPER;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.CHALLENGER : Personality.HELPER;
                 break;
             case 7:
                 this.personalityType = Personality.ENTHUSIAST;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.INVESTIGATOR : Personality.PEACEMAKER;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.INVESTIGATOR : Personality.PEACEMAKER;
                 break;
             case 8:
                 this.personalityType = Personality.CHALLENGER;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.PEACEMAKER : Personality.LOYALIST;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.PEACEMAKER : Personality.LOYALIST;
                 break;
             case 9:
                 this.personalityType = Personality.PEACEMAKER;
-                this.optPartnerPT = partnerGender.equals( "Male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
+                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
                 break;
         }
     }
