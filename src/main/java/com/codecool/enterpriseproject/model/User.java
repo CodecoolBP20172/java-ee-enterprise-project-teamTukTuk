@@ -26,7 +26,7 @@ public class User {
     private Personality personalityType;
 
     @Enumerated(EnumType.STRING)
-    private Personality optPartnerPT;
+    private Personality optPartnerPersType;
     private String passWord;
     private String email;
     private boolean inConversation;
@@ -95,8 +95,8 @@ public class User {
         return lastName;
     }
 
-    public Personality getOptPartnerPT() {
-        return optPartnerPT;
+    public Personality optPartnerPersType() {
+        return optPartnerPersType;
     }
 
     public Personality getPersonalityType() {
@@ -108,39 +108,39 @@ public class User {
         switch (personality) {
             case 1:
                 this.personalityType = Personality.REFORMER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ACHIEVER : Personality.INVESTIGATOR;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.ACHIEVER : Personality.INVESTIGATOR;
                 break;
             case 2:
                 this.personalityType = Personality.HELPER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.LOYALIST : Personality.ACHIEVER;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.LOYALIST : Personality.ACHIEVER;
                 break;
             case 3:
                 this.personalityType = Personality.ACHIEVER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.HELPER : Personality.REFORMER;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.HELPER : Personality.REFORMER;
                 break;
             case 4:
                 this.personalityType = Personality.INDIVIDUALIST;
-                this.optPartnerPT = Personality.INDIVIDUALIST;
+                this.optPartnerPersType = Personality.INDIVIDUALIST;
                 break;
             case 5:
                 this.personalityType = Personality.INVESTIGATOR;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.REFORMER : Personality.ENTHUSIAST;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.REFORMER : Personality.ENTHUSIAST;
                 break;
             case 6:
                 this.personalityType = Personality.LOYALIST;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.CHALLENGER : Personality.HELPER;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.CHALLENGER : Personality.HELPER;
                 break;
             case 7:
                 this.personalityType = Personality.ENTHUSIAST;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.INVESTIGATOR : Personality.PEACEMAKER;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.INVESTIGATOR : Personality.PEACEMAKER;
                 break;
             case 8:
                 this.personalityType = Personality.CHALLENGER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.PEACEMAKER : Personality.LOYALIST;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.PEACEMAKER : Personality.LOYALIST;
                 break;
             case 9:
                 this.personalityType = Personality.PEACEMAKER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
+                this.optPartnerPersType = partnerGender.equals( "male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
                 break;
         }
     }
