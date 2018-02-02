@@ -15,7 +15,11 @@ public class User {
     private String firstName;
     private String lastName;
     private int age;
+
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Enumerated(EnumType.STRING)
     private Gender partnerGender = Gender.male;
 
     @Enumerated(EnumType.STRING)
@@ -36,6 +40,19 @@ public class User {
         this.inConversation = inConversation;
         this.gender = setGender(gender);
         this.partnerGender = setGender(partnerGender);
+    }
+
+    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender) {
+        //to create test users in ChatController
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.passWord = passWord;
+        this.gender = setGender(gender);
+        this.partnerGender = setGender(partnerGender);
+        setPersonalities( personality );
     }
 
     public User() {
