@@ -16,7 +16,6 @@ public class UserDbHandler {
         transaction.begin();
         em.persist( object );
         transaction.commit();
-
     }
 
     //TODO make this method dynamic
@@ -24,7 +23,8 @@ public class UserDbHandler {
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        mergedUser.setPersonalities( personality );
+        mergedUser.setPersonalityType(personality);
+        mergedUser.setOptPartnerPersType(personality);
         transaction.commit();
     }
 
