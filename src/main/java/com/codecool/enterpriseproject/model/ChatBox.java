@@ -9,6 +9,7 @@ public class ChatBox {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int threadId;
 
+
     @OneToOne
     private User firstUser;
 

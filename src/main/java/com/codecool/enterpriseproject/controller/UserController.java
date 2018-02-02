@@ -119,7 +119,7 @@ public class UserController {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByUserName(em, req.session().attribute("email"));
         Personality pers = user.getPersonalityType();
-        Personality optPers = user.getOptPartnerPT();
+        Personality optPers = user.getOptPartnerPersType();
         User optUser = dbHandler.findUserByPersonality(em, optPers);
         String optName = optUser.getFirstName();
         params.put("currenUser", user);

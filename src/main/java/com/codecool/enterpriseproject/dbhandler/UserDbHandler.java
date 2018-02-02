@@ -55,7 +55,4 @@ public class UserDbHandler {
         transaction.commit();
         return (User) obj;
     }
-
-
-
 }
