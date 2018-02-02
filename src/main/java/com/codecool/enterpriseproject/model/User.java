@@ -15,8 +15,8 @@ public class User {
     private String firstName;
     private String lastName;
     private int age;
-    private String gender;
-    private String partnerGender = "apache helicopter";
+    private Gender gender;
+    private Gender partnerGender = Gender.male;
 
     @Enumerated(EnumType.STRING)
     private Personality personalityType;
@@ -34,21 +34,8 @@ public class User {
         this.email = email;
         this.passWord = passWord;
         this.inConversation = inConversation;
-        this.gender = gender;
-        this.partnerGender = partnerGender;
-    }
-
-    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender) {
-        //to create test users
-
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.email = email;
-        this.passWord = passWord;
-        this.gender = gender;
-        this.partnerGender = partnerGender;
-        setPersonalities( personality );
+        this.gender = setGender(gender);
+        this.partnerGender = setGender(partnerGender);
     }
 
     public User() {
@@ -139,5 +126,13 @@ public class User {
                 this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
                 break;
         }
+    }
+
+    private Gender setGender(String gender) {
+        switch (gender) {
+            case ("male") : return Gender.male;
+            case ("female") : return Gender.female;
+        }
+        throw new IllegalArgumentException();
     }
 }
