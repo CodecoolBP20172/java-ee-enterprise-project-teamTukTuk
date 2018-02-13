@@ -2,6 +2,8 @@ package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 
+@NamedQueries({
+        @NamedQuery(name = "chatBox.getChatBoxByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email")})
 @Entity
 public class ChatBox {
 

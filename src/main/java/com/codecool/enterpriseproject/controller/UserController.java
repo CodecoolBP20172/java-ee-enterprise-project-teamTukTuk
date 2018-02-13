@@ -120,7 +120,7 @@ public class UserController {
         User user = dbHandler.findUserByEmail(em, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(em, user);
 
-        params.put("currenUser", user);
+        params.put("user", user);
         params.put("match", optUser);
 
         return new ModelAndView( params, "/demo" );

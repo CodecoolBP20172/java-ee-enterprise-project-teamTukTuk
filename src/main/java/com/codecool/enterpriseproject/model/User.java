@@ -2,10 +2,11 @@ package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 
-@NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email"),
-@NamedQuery(name = "user.getUserById", query = "SELECT u FROM User AS u WHERE u.id = :id"),
-@NamedQuery(name = "user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers"),
-@NamedQuery(name = "user.findMatch", query = "SELECT u FROM User AS u WHERE u.age >= :minPartnerAge and u.age <= :maxPartnerAge and u.gender = :partnerGender and u.partnerGender = :gender and u.personalityType = :optPartnerPersType and u.inConversation = false")})
+@NamedQueries({
+        @NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email"),
+        @NamedQuery(name = "user.getUserById", query = "SELECT u FROM User AS u WHERE u.id = :id"),
+        @NamedQuery(name = "user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers"),
+        @NamedQuery(name = "user.findMatch", query = "SELECT u FROM User AS u WHERE u.age >= :minPartnerAge and u.age <= :maxPartnerAge and u.gender = :partnerGender and u.partnerGender = :gender and u.personalityType = :optPartnerPersType and u.inConversation = false")})
 @Entity
 @Table(name = "users")
 public class User {

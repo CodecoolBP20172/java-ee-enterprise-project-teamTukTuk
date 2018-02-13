@@ -58,18 +58,14 @@ public class UserDbHandler {
     }
 
     public User findMatch(EntityManager em, User user) {
-        //TODO
-        //find a match with max 5(?) years difference,
+        //find a match with max 5(?) years difference
         int maxDifference = 5;
         int minPartnerAge = user.getAge() - maxDifference;
         int maxPartnerAge = user.getAge() + maxDifference;
-        //with the right gender and orientation
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
-        //with the right personality
         Personality optPartnerPersType = user.getOptPartnerPersType();
-        //where the partner is not in a conversation
-        //then return the first match
+
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "user.findMatch", User.class );
@@ -78,15 +74,15 @@ public class UserDbHandler {
         query.setParameter( "gender", gender );
         query.setParameter( "partnerGender", partnerGender );
         query.setParameter( "optPartnerPersType", optPartnerPersType );
-        List match = query.getResultList();
+        List matches = query.getResultList();
         Object obj = null;
 
         /*right now it just returns the first from the list
         *but later we have to make sure the user is not getting the same match
         *maybe we could give a list to the user where the previous match id-s are listed
         *so that we can avoid them (in the user.findMatch @NamedQuery)*/
-        if (!match.isEmpty()) {
-            obj = match.get( 0 );
+        if (!matches.isEmpty()) {
+            obj = matches.get(0);
         }
         transaction.commit();
 
