@@ -1,5 +1,6 @@
 package com.codecool.enterpriseproject.dbhandler;
 
+import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Gender;
 import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
@@ -7,10 +8,17 @@ import com.codecool.enterpriseproject.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.xml.stream.FactoryConfigurationError;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDbHandler {
 
+    private ChatBoxDbHandler chatBoxDbHandler;
+
+    public UserDbHandler(ChatBoxDbHandler chatBoxDbHandler) {
+        this.chatBoxDbHandler = chatBoxDbHandler;
+    }
 
     public void add(Object object, EntityManager em) {
         EntityTransaction transaction = em.getTransaction();
@@ -65,6 +73,7 @@ public class UserDbHandler {
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
         Personality optPartnerPersType = user.getOptPartnerPersType();
+        String email = user.getEmail();
 
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
@@ -75,13 +84,29 @@ public class UserDbHandler {
         query.setParameter( "partnerGender", partnerGender );
         query.setParameter( "optPartnerPersType", optPartnerPersType );
         List matches = query.getResultList();
+
+        System.out.println("1st from matches: " + matches.get(0));
+
         Object obj = null;
 
-        /*right now it just returns the first from the list
-        *but later we have to make sure the user is not getting the same match
-        *maybe we could give a list to the user where the previous match id-s are listed
-        *so that we can avoid them (in the user.findMatch @NamedQuery)*/
-        if (!matches.isEmpty()) {
+        List usersWeMet = chatBoxDbHandler.findUsersWeMet(em, email);
+        if (usersWeMet.isEmpty()) {
+            System.out.println("empty");
+        } else {
+            System.out.println("usersWeMet: " + usersWeMet);
+        }
+
+        if (!matches.isEmpty() && !usersWeMet.isEmpty()) {
+            boolean matchFound = false;
+            while (!matchFound) {
+                for (Object match : matches) {
+                    if (!usersWeMet.contains(match)) {
+                        obj = match;
+                        matchFound = true;
+                    }
+                }
+            }
+        } else {
             obj = matches.get(0);
         }
         transaction.commit();

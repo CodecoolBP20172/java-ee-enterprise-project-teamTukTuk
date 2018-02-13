@@ -2,6 +2,7 @@ package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.ChatController;
 import com.codecool.enterpriseproject.controller.UserController;
+import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.User;
 import spark.Request;
@@ -22,7 +23,8 @@ public class Main {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory( "enterprisePU" );
         EntityManager em = emf.createEntityManager();
 
-        UserDbHandler dbHandler = new UserDbHandler();
+        ChatBoxDbHandler chatBoxDbHandler = new ChatBoxDbHandler();
+        UserDbHandler dbHandler = new UserDbHandler(chatBoxDbHandler);
 
         before( "/user/*", UserController::checkIfInSession );
 
