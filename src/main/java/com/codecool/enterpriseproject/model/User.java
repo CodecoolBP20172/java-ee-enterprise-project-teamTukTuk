@@ -4,7 +4,8 @@ import javax.persistence.*;
 
 @NamedQueries({@NamedQuery(name = "user.getUserByEmail", query = "SELECT u FROM User AS u WHERE u.email = :email"),
 @NamedQuery(name = "user.getUserById", query = "SELECT u FROM User AS u WHERE u.id = :id"),
-@NamedQuery(name="user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers")})
+@NamedQuery(name = "user.getUserByPersonality", query = "SELECT u FROM User AS u WHERE u.personalityType = :pers"),
+@NamedQuery(name = "user.findMatch", query = "SELECT u FROM User AS u WHERE u.age >= :minPartnerAge and u.age <= :maxPartnerAge and u.gender = :partnerGender and u.partnerGender = :gender and u.personalityType = :optPartnerPersType and u.inConversation = false")})
 @Entity
 @Table(name = "users")
 public class User {
@@ -30,6 +31,31 @@ public class User {
     private String passWord;
     private String email;
     private boolean inConversation;
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public Gender getPartnerGender() {
+        return partnerGender;
+    }
+
+    public void setPartnerGender(Gender partnerGender) {
+        this.partnerGender = partnerGender;
+    }
+
+    public int getAge() {
+
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public User(String firstName, String lastName, int age, String passWord, String email, boolean inConversation, String gender, String partnerGender) {
         this.firstName = firstName;
