@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ChatBoxDbHandler {
 
-    public void add(Message message, EntityManagerFactory emf) {
+    public void addNewMessage(Message message, EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
