@@ -7,39 +7,39 @@ public class ChatBox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int thread_id;
+    private int threadId;
 
     @OneToOne
-    private User first_user;
+    private User firstUser;
 
     @OneToOne
-    private User second_user;
+    private User secondUser;
 
-    public ChatBox(User first_user, User second_user) {
-        this.first_user = first_user;
-        this.second_user = second_user;
+    public ChatBox(User firstUser, User secondUser) {
+        this.firstUser = firstUser;
+        this.secondUser = secondUser;
     }
 
     public ChatBox() {
     }
 
     public int getId() {
-        return thread_id;
+        return threadId;
     }
 
-    public User getFirst_user() {
-        return first_user;
+    public User getFirstUser() {
+        return firstUser;
     }
 
-    public void setFirst_user(User first_user) {
-        this.first_user = first_user;
+    public void setFirstUser(User firstUser) {
+        this.firstUser = firstUser;
     }
 
-    public User getSecond_user() {
-        return second_user;
+    public User getSecondUser() {
+        return secondUser;
     }
 
-    public void setSecond_user(User second_user) {
-        this.second_user = second_user;
+    public void setSecondUser(User secondUser) {
+        this.secondUser = secondUser;
     }
 }

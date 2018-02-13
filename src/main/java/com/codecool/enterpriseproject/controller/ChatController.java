@@ -11,6 +11,8 @@ import java.util.Date;
 public class ChatController {
 
     public static String renderTestChat(UserDbHandler dbHandler, EntityManager em) {
+        //this uses the old constructor in the user class made for test users.
+
         User sanyika = new User( "sanyika", "abarótistartvből", "sanyika@email.com", 17, "pass", 1, "Male", "Female" );
         User jolika = new User( "jolika", "sanyiszerelme", "jolika@email.com", 16, "pass", 3, "Female", "Male" );
         dbHandler.add( sanyika, em );

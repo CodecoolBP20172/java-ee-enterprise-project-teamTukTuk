@@ -42,7 +42,5 @@ public class Main {
         post( "/set_personality", (Request req, Response res) ->
                 new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , em, dbHandler) ) );
     }
-
-
-    }
+}
 

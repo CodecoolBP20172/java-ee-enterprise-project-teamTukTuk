@@ -73,10 +73,10 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "id=" + id +
-                ", thread_id=" + chatBox +
+                ", threadId=" + chatBox +
                 ", date=" + date +
                 ", message='" + message + '\'' +
-                ", user_id=" + user +
+                ", userId=" + user +
                 '}';
     }
 }

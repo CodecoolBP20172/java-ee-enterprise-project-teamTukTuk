@@ -15,14 +15,18 @@ public class User {
     private String firstName;
     private String lastName;
     private int age;
-    private String gender;
-    private String partnerGender = "apache helicopter";
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    private Gender partnerGender = Gender.male;
 
     @Enumerated(EnumType.STRING)
     private Personality personalityType;
 
     @Enumerated(EnumType.STRING)
-    private Personality optPartnerPT;
+    private Personality optPartnerPersType;
     private String passWord;
     private String email;
     private boolean inConversation;
@@ -34,21 +38,22 @@ public class User {
         this.email = email;
         this.passWord = passWord;
         this.inConversation = inConversation;
-        this.gender = gender;
-        this.partnerGender = partnerGender;
+        this.gender = setGender(gender);
+        this.partnerGender = setGender(partnerGender);
     }
 
     public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender) {
-        //to create test users
+        //to create test users in ChatController
 
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.passWord = passWord;
-        this.gender = gender;
-        this.partnerGender = partnerGender;
-        setPersonalities( personality );
+        this.gender = setGender(gender);
+        this.partnerGender = setGender(partnerGender);
+        setPersonalityType(personality);
+        setOptPartnerPersType(personality);
     }
 
     public User() {
@@ -91,53 +96,48 @@ public class User {
         return lastName;
     }
 
-    public Personality getOptPartnerPT() {
-        return optPartnerPT;
+    public Personality getOptPartnerPersType() {
+        return optPartnerPersType;
     }
 
     public Personality getPersonalityType() {
         return personalityType;
     }
 
-    public void setPersonalities(int personality) {
+    private Gender setGender(String gender) {
+        switch (gender) {
+            case ("male") : return Gender.male;
+            case ("female") : return Gender.female;
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public void setPersonalityType(int personalityType) {
+        switch (personalityType) {
+            case 1: this.personalityType = Personality.REFORMER; break;
+            case 2: this.personalityType = Personality.HELPER; break;
+            case 3: this.personalityType = Personality.ACHIEVER; break;
+            case 4: this.personalityType = Personality.INDIVIDUALIST; break;
+            case 5: this.personalityType = Personality.INVESTIGATOR; break;
+            case 6: this.personalityType = Personality.LOYALIST; break;
+            case 7: this.personalityType = Personality.ENTHUSIAST; break;
+            case 8: this.personalityType = Personality.CHALLENGER; break;
+            case 9: this.personalityType = Personality.PEACEMAKER; break;
+        }
+    }
+
+    public void setOptPartnerPersType(int optPartnerPersType) {
         //throws 500 if optimal personality type is not in db
-        switch (personality) {
-            case 1:
-                this.personalityType = Personality.REFORMER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ACHIEVER : Personality.INVESTIGATOR;
-                break;
-            case 2:
-                this.personalityType = Personality.HELPER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.LOYALIST : Personality.ACHIEVER;
-                break;
-            case 3:
-                this.personalityType = Personality.ACHIEVER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.HELPER : Personality.REFORMER;
-                break;
-            case 4:
-                this.personalityType = Personality.INDIVIDUALIST;
-                this.optPartnerPT = Personality.INDIVIDUALIST;
-                break;
-            case 5:
-                this.personalityType = Personality.INVESTIGATOR;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.REFORMER : Personality.ENTHUSIAST;
-                break;
-            case 6:
-                this.personalityType = Personality.LOYALIST;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.CHALLENGER : Personality.HELPER;
-                break;
-            case 7:
-                this.personalityType = Personality.ENTHUSIAST;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.INVESTIGATOR : Personality.PEACEMAKER;
-                break;
-            case 8:
-                this.personalityType = Personality.CHALLENGER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.PEACEMAKER : Personality.LOYALIST;
-                break;
-            case 9:
-                this.personalityType = Personality.PEACEMAKER;
-                this.optPartnerPT = partnerGender.equals( "male" ) ? Personality.ENTHUSIAST : Personality.CHALLENGER;
-                break;
+        switch (optPartnerPersType) {
+            case 1: this.optPartnerPersType = partnerGender == Gender.male ? Personality.ACHIEVER : Personality.INVESTIGATOR; break;
+            case 2: this.optPartnerPersType = partnerGender == Gender.male ? Personality.LOYALIST : Personality.ACHIEVER; break;
+            case 3: this.optPartnerPersType = partnerGender == Gender.male ? Personality.HELPER : Personality.REFORMER; break;
+            case 4: this.optPartnerPersType = Personality.INDIVIDUALIST; break;
+            case 5: this.optPartnerPersType = partnerGender == Gender.male ? Personality.REFORMER : Personality.ENTHUSIAST; break;
+            case 6: this.optPartnerPersType = partnerGender == Gender.male ? Personality.CHALLENGER : Personality.HELPER; break;
+            case 7: this.optPartnerPersType = partnerGender == Gender.male ? Personality.INVESTIGATOR : Personality.PEACEMAKER; break;
+            case 8: this.optPartnerPersType = partnerGender == Gender.male ? Personality.PEACEMAKER : Personality.LOYALIST; break;
+            case 9: this.optPartnerPersType = partnerGender == Gender.male ? Personality.ENTHUSIAST : Personality.CHALLENGER; break;
         }
     }
 }
