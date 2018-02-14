@@ -32,9 +32,10 @@ public class UserController {
 
     public static void checkIfInSession(Request request, Response response) {
         if (request.session().attribute( "id" ) == null) {
-            response.redirect( "/" );
-            halt( "Unauthorized access" );
+            response.redirect("/");
+            halt("Unauthorized access");
         }
+        response.redirect("/dashboard");
     }
 
     public static String registeringWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
@@ -63,7 +64,7 @@ public class UserController {
                 request.session(true);
                 request.session().attribute( "id", user.getId() );
                 request.session().attribute( "email", user.getEmail() );
-                response.redirect( "/personality_test" );
+                response.redirect( "/dashboard" );
             }
             return "rosszpw";
         }

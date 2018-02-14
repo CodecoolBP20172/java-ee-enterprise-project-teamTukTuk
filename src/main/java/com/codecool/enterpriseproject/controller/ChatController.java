@@ -16,18 +16,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static spark.Spark.redirect;
+
 public class ChatController {
 
     
     public static ModelAndView renderChatPage(Request request, Response response, UserDbHandler dbHandler, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf) {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByUserName(emf, request.session().attribute("email"));
+
         ChatBox chatBox = chatBoxDbHandler.getChatBox( user, emf );
         int threadId = chatBox.getId();
         List<Message> messages = chatBoxDbHandler.getMessages( threadId, emf );
-        // TODO find the optimal match, for create the chatbox
-        //ChatBox chatBox = new ChatBox( user, match );
-
+        params.put("messages", messages);
+        System.out.println(messages);
         return new ModelAndView( params, "/dashboard" );
+    }
+
+    public static String writeMessageIntoDB(Request req, Response res, UserDbHandler UdbHandler, ChatBoxDbHandler dbHandler,EntityManagerFactory emf ) {
+        String text = req.queryParams("message");
+        User user = UdbHandler.findUserByUserName(emf, req.session().attribute("email"));
+        ChatBox chatBox = dbHandler.getChatBox(user, emf);
+        Message message = new Message(chatBox, new Date(), text, user);
+        dbHandler.addNewMessage(message, emf);
+        res.redirect("/dashboard");
+        return "";
     }
 }
