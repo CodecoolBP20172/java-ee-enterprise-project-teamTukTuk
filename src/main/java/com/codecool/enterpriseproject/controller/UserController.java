@@ -3,6 +3,8 @@ package com.codecool.enterpriseproject.controller;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -15,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static spark.Spark.halt;
 
@@ -42,10 +42,11 @@ public class UserController {
         }
     }
 
-    public static String handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
+    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
         List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
         Map<String, String> params = toMap(pairs);
-        System.out.println("validation started...");
+
+        logger.info("validation started...");
         List<String> result = validateRegister(params, dbHandler, em);
 
         if(result.isEmpty()) {
@@ -62,15 +63,27 @@ public class UserController {
                     params.get("preference")
             );
             dbHandler.add(user, em );
-            return "OK";
+            result.add("Your account has been created!");
+            return createHashMap(result, true);
         } else {
-            return "NOT OK";
+
+            for (String error: result
+                 ) {
+                logger.error(error);
+            }
+            return createHashMap(result, false);
         }
+
     }
 
     private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManager em) {
 
         List<String> issues = new ArrayList<>();
+
+        if(!checkForEmptyFields(params)) {
+            issues.add("All fields are required!");
+            return issues;
+        }
 
         String email = params.get("email").trim();
         String firstName = params.get("firstName").trim();
@@ -78,23 +91,24 @@ public class UserController {
         String password = params.get("password");
         String passwordAgain = params.get("passwordAgain");
 
-        System.out.println("> checking passwords");
+
+        logger.info("> checking passwords");
         if (!password.equals(passwordAgain)) {
             issues.add("Passwords do not match!");
             return issues; // no point going further if passwords are wrong
         }
-        System.out.println("> checking name length");
+        logger.info("> checking name length");
         if (firstName.length() < 4 || lastName.length() < 4) {
             issues.add("Your name has to be at least 4 characters long!");
         }
 
-        System.out.println("> checking for invalid characters in name");
+        logger.info("> checking for invalid characters in name");
         if (!firstName.matches("[a-zA-Z0-9]+") || !lastName.matches("[a-zA-Z0-9]+")) {
             issues.add("Your name can only contain letters and numbers!");
         }
 
         User potentialUser = dbHandler.findUserByUserByEmail(em, email);
-        System.out.println("> checking if email exists");
+        logger.info("> checking if email exists");
         if (potentialUser != null) {
             issues.add("The given email already exists!");
         }
@@ -111,8 +125,37 @@ public class UserController {
             issues.add("Age is outside the reasonable interval!");
         }
 
-        System.out.println("validation finished.");
+        logger.info("validation finished.");
         return issues;
+    }
+
+    private static boolean checkForEmptyFields(Map<String, String> fields) {
+
+        if(!fields.containsKey("gender") || !fields.containsKey("preference")) {
+            return false;
+        }
+        for (String field: fields.values()
+             ) {
+            if(field.equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static HashMap<String, String> createHashMap(List<String> list, boolean success) {
+        HashMap<String, String> result = new HashMap<>();
+
+        if(success) {
+            result.put("success", "true");
+        }
+        Integer counter = 0;
+        for (String listItem: list
+             ) {
+            result.put(counter.toString(), listItem);
+            counter++;
+        }
+        return result;
     }
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {

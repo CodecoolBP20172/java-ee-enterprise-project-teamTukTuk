@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import static com.codecool.enterpriseproject.util.JsonUtil.json;
 import static spark.Spark.*;
 
 
@@ -32,7 +33,7 @@ public class Main {
 
         get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
-        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, em ) );
+        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, em ), json() );
 
         post( "/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, em ) );
 
