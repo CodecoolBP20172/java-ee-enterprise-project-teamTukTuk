@@ -42,6 +42,12 @@ public class Main {
 
         post( "/set_personality", (Request req, Response res) ->
                 new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , emf, dbHandler) ) );
+
+        get("/dashboard", (Request req, Response res) -> new ThymeleafTemplateEngine().render(ChatController.renderChatPage(req, res, dbHandler, chatBoxDbHandler, emf)));
+
+        post("post_message", (Request request, Response response) -> {
+            return new ThymeleafTemplateEngine().render(ChatController.writeMessageIntoDB(request, response, dbHandler, chatBoxDbHandler, emf));
+        });
     }
 }
 
