@@ -17,9 +17,12 @@ public class ChatBox {
     @OneToOne
     private User secondUser;
 
+    private boolean active;
+
     public ChatBox(User firstUser, User secondUser) {
         this.firstUser = firstUser;
         this.secondUser = secondUser;
+        active = true;
     }
 
     public ChatBox() {

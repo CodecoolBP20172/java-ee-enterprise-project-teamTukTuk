@@ -14,7 +14,6 @@ public class ChatBoxDbHandler {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         //here appears but the there doesn't. why?
-        //lets put some dummy data to the database
         Query query = em.createNamedQuery( "chatBox.getUsersWeMet", ChatBox.class );
         query.setParameter( "email", email );
         List usersWeMet = query.getResultList();
