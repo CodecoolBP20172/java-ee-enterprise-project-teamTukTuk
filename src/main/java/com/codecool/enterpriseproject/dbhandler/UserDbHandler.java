@@ -109,19 +109,21 @@ public class UserDbHandler {
 
         System.out.println("usersmet: " + usersMet);
 
+        if (matches.isEmpty()) {return null;}
         boolean matchFound = false;
         while (!matchFound) {
             int lengthChecker = 0;
+            System.out.println("matches size: " + matches.size());
             for (Object match : matches) {
                 lengthChecker += 1;
+                System.out.println("lenghtCh: " + lengthChecker);
                 if (!usersMet.contains(match)) {
                     theOne = match;
                     matchFound = true;
                 }
-                if (usersMet.size()>0 && lengthChecker==matches.size() && !matchFound) {
+                if (lengthChecker>=matches.size() && !matchFound) {
                     //if the user have talked to all matches we return null
-                    theOne = null;
-                    matchFound = true;
+                    return null;
                 }
             }
         }
