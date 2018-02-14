@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatBoxDbHandler {
+    public void addNewChatBox(EntityManager em, ChatBox chatBox) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        em.persist(chatBox);
+        transaction.commit();
+    }
+
     List findPastChatBoxes(EntityManager em, User user) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();

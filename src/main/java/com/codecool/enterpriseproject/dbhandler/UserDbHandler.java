@@ -105,15 +105,15 @@ public class UserDbHandler {
         while (!matchFound) {
             int lengthChecker = 0;
             for (Object match : matches) {
+                lengthChecker += 1;
                 if (!usersMet.contains(match)) {
                     theOne = match;
                     matchFound = true;
-                    lengthChecker += 1;
-                    if (usersMet.size()>0 && lengthChecker == matches.size()) {
-                        //if the user have talked to all matches we return null
-                        theOne = null;
-                        matchFound = true;
-                    }
+                }
+                if (usersMet.size()>0 && lengthChecker==matches.size() && !matchFound) {
+                    //if the user have talked to all matches we return null
+                    theOne = null;
+                    matchFound = true;
                 }
             }
         }

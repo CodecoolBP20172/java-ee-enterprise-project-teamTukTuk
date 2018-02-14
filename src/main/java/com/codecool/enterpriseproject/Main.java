@@ -28,7 +28,7 @@ public class Main {
 
         before( "/user/*", UserController::checkIfInSession );
 
-        get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, dbHandler, em)) );
+        get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, chatBoxDbHandler, dbHandler, em)) );
 
         get( "/testChat", (Request req, Response res) -> ChatController.renderTestChat( dbHandler, em ) );
 

@@ -1,6 +1,8 @@
 package com.codecool.enterpriseproject.controller;
 
+import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 import spark.ModelAndView;
@@ -115,13 +117,15 @@ public class UserController {
         return mostFrequentValue;
     }
 
-    public static ModelAndView renderUserPage(Request req, Response res, UserDbHandler dbHandler, EntityManager em) {
+    public static ModelAndView renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManager em) {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(em, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(em, user);
 
         params.put("user", user);
         params.put("match", optUser);
+        ChatBox chatBox = new ChatBox(user, optUser);
+        chatBoxDbHandler.addNewChatBox(em, chatBox);
 
         return new ModelAndView( params, "/demo" );
     }
