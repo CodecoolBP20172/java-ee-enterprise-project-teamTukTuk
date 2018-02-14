@@ -8,7 +8,6 @@ import com.codecool.enterpriseproject.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.xml.stream.FactoryConfigurationError;
 import java.util.ArrayList;
 import java.util.List;
 

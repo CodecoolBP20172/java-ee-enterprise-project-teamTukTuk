@@ -6,7 +6,6 @@ import com.codecool.enterpriseproject.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatBoxDbHandler {
@@ -17,7 +16,7 @@ public class ChatBoxDbHandler {
         transaction.commit();
     }
 
-    List findPastChatBoxes(EntityManager em, User user) {
+    public List findPastChatBoxes(EntityManager em, User user) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "chatBox.getUsersWeMet", ChatBox.class );
