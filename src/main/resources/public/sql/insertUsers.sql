@@ -2,3 +2,4 @@ INSERT INTO users (age, email, firstname, lastname, password, gender, partnergen
 INSERT INTO users (age, email, firstname, lastname, password, gender, partnergender, inConversation, optpartnerperstype, personalitytype) VALUES (26, 'Carla@email.com', 'Carla', 'Jackson', 'password', 'female', 'male', FALSE , 'LOYALIST', 'HELPER');
 INSERT INTO users (age, email, firstname, lastname, password, gender, partnergender, inConversation, optpartnerperstype, personalitytype) VALUES (31, 'Clare@email.com', 'Clare', 'Fraeser', 'password', 'female', 'male', FALSE , 'REFORMER', 'ACHIEVER');
 INSERT INTO users (age, email, firstname, lastname, password, gender, partnergender, inConversation, optpartnerperstype, personalitytype) VALUES (22, 'Mike@email.com', 'Mike', 'Gregg', 'password', 'male', 'female', FALSE , 'PEACEMAKER', 'CHALLENGER');
+INSERT INTO chatbox (active, firstuser_id, seconduser_id) VALUES (TRUE , 1, 2);
