@@ -7,8 +7,8 @@ window.onload = function(){
             'email': $('#email').val(),
             'firstName': $('#first_name').val(),
             'lastName': $('#last_name').val(),
-            'psw': $('#password').val(),
-            'pswagain': $('#password_again').val(),
+            'password': $('#password').val(),
+            'passwordAgain': $('#password_again').val(),
             'age': $('#age').val(),
             'gender': $('input[name=gender]:checked').val(),
             'preference': $('input[name=preference]:checked').val()
@@ -22,15 +22,6 @@ window.onload = function(){
             data: data,
             success: function (response) {
                 console.log(response);
-                if(response.length < 3) {
-                    $('#signUp').modal('hide');
-
-                    $(".register-success").fadeTo(5000, 5000).slideUp(500, function(){
-                        $(".register-success").slideUp(500);
-                         });   
-                } else {
-                    $('.alert-danger').show();
-                }
             }
         });
     });

@@ -32,7 +32,7 @@ public class Main {
 
         get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
-        post( "/register_user", (Request request, Response response) -> UserController.registeringWithValidate( request, response, dbHandler, em ) );
+        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, em ) );
 
         post( "/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, em ) );
 

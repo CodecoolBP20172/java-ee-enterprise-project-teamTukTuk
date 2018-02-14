@@ -28,7 +28,7 @@ public class UserDbHandler {
         transaction.commit();
     }
 
-    public User findUserByUserName(EntityManager em, String email) {
+    public User findUserByUserByEmail(EntityManager em, String email) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "user.getUserByEmail", User.class );

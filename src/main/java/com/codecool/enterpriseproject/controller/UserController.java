@@ -6,20 +6,26 @@ import com.codecool.enterpriseproject.model.User;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import static org.mindrot.jbcrypt.BCrypt.*;
 import javax.persistence.EntityManager;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static spark.Spark.halt;
 
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     public static ModelAndView renderRegisterPage(Request req, Response res) {
         Map params = new HashMap<>();
-
         return new ModelAndView( params, "/index" );
     }
 
@@ -36,28 +42,83 @@ public class UserController {
         }
     }
 
-    public static String registeringWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
-        if (request.queryParams( "password" ).equals( request.queryParams( "password_again" ) )) {
-            User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ), Integer.parseInt( request.queryParams( "age" ) ), request.queryParams( "password" ), request.queryParams( "email" ), false, request.queryParams( "gender" ), request.queryParams( "preference" ) );
-            System.out.println( request.queryParams( "password" ) );
-            dbHandler.add( user, em );
-            request.session(true);
-            System.out.println(user.getId());
-            request.session().attribute( "email", user.getEmail() );
-            request.session().attribute("id", user.getId());
-            System.out.println(request.session().attribute("email").toString());
-            response.redirect( "/personality_test" );
+    public static String handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
+        List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
+        Map<String, String> params = toMap(pairs);
+        System.out.println("validation started...");
+        List<String> result = validateRegister(params, dbHandler, em);
+
+        if(result.isEmpty()) {
+
+            String hashedPassword = hashpw(params.get("password"), gensalt());
+            User user = new User(
+                    params.get("firstName").trim(),
+                    params.get("lastName").trim(),
+                    Integer.parseInt(params.get("age")),
+                    hashedPassword,
+                    params.get("email"),
+                    false,
+                    params.get("gender"),
+                    params.get("preference")
+            );
+            dbHandler.add(user, em );
+            return "OK";
         } else {
-            return "rossz pw";
+            return "NOT OK";
+        }
+    }
+
+    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManager em) {
+
+        List<String> issues = new ArrayList<>();
+
+        String email = params.get("email").trim();
+        String firstName = params.get("firstName").trim();
+        String lastName = params.get("lastName").trim();
+        String password = params.get("password");
+        String passwordAgain = params.get("passwordAgain");
+
+        System.out.println("> checking passwords");
+        if (!password.equals(passwordAgain)) {
+            issues.add("Passwords do not match!");
+            return issues; // no point going further if passwords are wrong
+        }
+        System.out.println("> checking name length");
+        if (firstName.length() < 4 || lastName.length() < 4) {
+            issues.add("Your name has to be at least 4 characters long!");
         }
 
-        return "";
+        System.out.println("> checking for invalid characters in name");
+        if (!firstName.matches("[a-zA-Z0-9]+") || !lastName.matches("[a-zA-Z0-9]+")) {
+            issues.add("Your name can only contain letters and numbers!");
+        }
+
+        User potentialUser = dbHandler.findUserByUserByEmail(em, email);
+        System.out.println("> checking if email exists");
+        if (potentialUser != null) {
+            issues.add("The given email already exists!");
+        }
+
+        int age;
+        try {
+            age = Integer.parseInt(params.get("age"));
+        } catch(NumberFormatException ex) {
+            issues.add("Age could not be parsed!");
+            return issues;
+        }
+
+        if(age < 1 || age > 100) {
+            issues.add("Age is outside the reasonable interval!");
+        }
+
+        System.out.println("validation finished.");
+        return issues;
     }
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
         String userEmail = request.queryParams( "email" );
         String pswd = request.queryParams( "password" );
-        User user = dbHandler.findUserByUserName( em, userEmail );
+        User user = dbHandler.findUserByUserByEmail( em, userEmail );
         if (user != null) {
             if (pswd.equals( user.getPassWord() )) {
                 request.session(true);
@@ -77,7 +138,7 @@ public class UserController {
         //TODO analise the result and set personality
         //personality is found here, but need to set it for the user
         System.out.println((String) req.session().attribute("email"));
-        User user = dbHandler.findUserByUserName(em, req.session().attribute("email"));
+        User user = dbHandler.findUserByUserByEmail(em, req.session().attribute("email"));
         System.out.println(user.toString());
         int personalityType = findPersonality( req );
         dbHandler.updateUserPersonality(user, em, personalityType );
@@ -117,7 +178,7 @@ public class UserController {
 
     public static ModelAndView renderUserPage(Request req, Response res, UserDbHandler dbHandler, EntityManager em) {
         Map params = new HashMap<>();
-        User user = dbHandler.findUserByUserName(em, req.session().attribute("email"));
+        User user = dbHandler.findUserByUserByEmail(em, req.session().attribute("email"));
         Personality pers = user.getPersonalityType();
         Personality optPers = user.getOptPartnerPersType();
         User optUser = dbHandler.findUserByPersonality(em, optPers);
@@ -126,6 +187,15 @@ public class UserController {
         params.put("match", optUser);
 
         return new ModelAndView( params, "/demo" );
+    }
+
+    private static Map<String, String> toMap(List<NameValuePair> pairs){
+        Map<String, String> map = new HashMap<>();
+        for(int i=0; i<pairs.size(); i++){
+            NameValuePair pair = pairs.get(i);
+            map.put(pair.getName(), pair.getValue());
+        }
+        return map;
     }
 
 }
