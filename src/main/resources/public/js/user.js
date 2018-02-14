@@ -16,8 +16,6 @@ window.onload = function(){
             'preference': $('input[name=preference]:checked').val()
         };
 
-        console.log(data);
-        
         $.ajax({
             type: 'POST',
             url: '/api/register',
@@ -48,15 +46,12 @@ window.onload = function(){
             'email': $('#login_email').val(),
             'password': $('#login_password').val(),
         };
-
-        console.log(data);
         
         $.ajax({
             type: 'POST',
             url: '/api/login',
             data: data,
             success: function (response) {
-                console.log(response);
                 if(response === "success"){
                     $('#login').modal('hide');
                 } else {
