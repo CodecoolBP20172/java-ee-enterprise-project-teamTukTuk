@@ -73,7 +73,6 @@ public class UserDbHandler {
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
         Personality optPartnerPersType = user.getOptPartnerPersType();
-        String email = user.getEmail();
 
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
@@ -84,33 +83,56 @@ public class UserDbHandler {
         query.setParameter( "partnerGender", partnerGender );
         query.setParameter( "optPartnerPersType", optPartnerPersType );
         List matches = query.getResultList();
+        transaction.commit();
 
-        System.out.println("1st from matches: " + matches.get(0));
+        Object obj = findTheOne(em, matches, user);
 
-        Object obj = null;
+        return (User) obj;
+    }
 
-        List usersWeMet = chatBoxDbHandler.findUsersWeMet(em, email);
-        if (usersWeMet.isEmpty()) {
-            System.out.println("empty");
-        } else {
-            System.out.println("usersWeMet: " + usersWeMet);
-        }
+    private Object findTheOne(EntityManager em, List matches, User user) {
+        Object theOne = null;
+        List pastChatboxes = chatBoxDbHandler.findPastChatBoxes(em, user);
 
-        if (!matches.isEmpty() && !usersWeMet.isEmpty()) {
-            boolean matchFound = false;
-            while (!matchFound) {
-                for (Object match : matches) {
-                    if (!usersWeMet.contains(match)) {
-                        obj = match;
+        //these should be tested if you can convert Objects to ChatBoxes
+        //and then to a List of Users like this
+        ArrayList<ChatBox> chatboxes = setPastChatBoxes(pastChatboxes);
+        List usersMet = findUsersMet(chatboxes);
+
+        System.out.println("usersmet: " + usersMet);
+
+        boolean matchFound = false;
+        while (!matchFound) {
+            int lengthChecker = 0;
+            for (Object match : matches) {
+                if (!usersMet.contains(match)) {
+                    theOne = match;
+                    matchFound = true;
+                    lengthChecker += 1;
+                    if (usersMet.size()>0 && lengthChecker == matches.size()) {
+                        //if the user have talked to all matches we return null
+                        theOne = null;
                         matchFound = true;
                     }
                 }
             }
-        } else {
-            obj = matches.get(0);
         }
-        transaction.commit();
+        return (User) theOne;
+    }
 
-        return (User) obj;
+    private List findUsersMet(ArrayList<ChatBox> chatboxes) {
+        List usersMet = new ArrayList();
+        for (ChatBox chatBox : chatboxes) {
+            usersMet.add(chatBox.getSecondUser());
+        }
+        return usersMet;
+    }
+
+    private ArrayList<ChatBox> setPastChatBoxes(List pastChatboxes) {
+        ArrayList<ChatBox> chatboxes = new ArrayList<>();
+        for (Object chatbox : pastChatboxes) {
+            chatboxes.add((ChatBox) chatbox);
+        }
+        return chatboxes;
     }
 }
