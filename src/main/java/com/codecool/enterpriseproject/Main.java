@@ -48,6 +48,12 @@ public class Main {
         post("post_message", (Request request, Response response) -> {
             return new ThymeleafTemplateEngine().render(ChatController.writeMessageIntoDB(request, response, dbHandler, chatBoxDbHandler, emf));
         });
+
+        get("/logout", (request, response) -> {
+            request.session().invalidate();
+            response.redirect("/");
+            return "";
+        });
     }
 }
 

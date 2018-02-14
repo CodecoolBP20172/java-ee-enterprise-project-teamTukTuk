@@ -29,6 +29,7 @@ public class ChatController {
         int threadId = chatBox.getId();
         List<Message> messages = chatBoxDbHandler.getMessages( threadId, emf );
         params.put("messages", messages);
+        params.put("user", user);
         System.out.println(messages);
         return new ModelAndView( params, "/dashboard" );
     }
