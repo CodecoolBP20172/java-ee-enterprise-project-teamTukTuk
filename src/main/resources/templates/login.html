@@ -2,20 +2,20 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="login">
-    <form action="/login" method="post">
+    <form>
         <div id="login-form" class="modal-body">
             <div class="input-group login-userinput">
-                <input id="email_login" type="text" class="form-control username_login" name="email"
+                <input id="login_email" type="text" class="form-control username_login" name="login_email"
                        placeholder="e-mail address" required="true"/>
-                <input id="login_password" type="password" class="form-control password_login" name="password"
+                <input id="login_password" type="password" class="form-control password_login" name="login_password"
                        placeholder="Password" required="true"/>
             </div>
-            <!-- <div class="alert alert-danger">
-                <p>username or password is incorrect!</p>
-            </div> -->
+            <div class="alert alert-danger login_error">
+                <p>E-mail or password is incorrect!</p>
+            </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-success btn-block login-button" type="submit">Login</button>
+            <button class="btn btn-success btn-block login-button" type="button">Login</button>
         </div>
     </form>
 </div>

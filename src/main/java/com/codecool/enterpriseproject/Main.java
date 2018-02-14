@@ -35,7 +35,7 @@ public class Main {
 
         post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, em ), json() );
 
-        post( "/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, em ) );
+        post( "/api/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, em ) );
 
         //need to check first if signed in, otherwise should be 404 -Attila
         get( "/personality_test", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) ) );

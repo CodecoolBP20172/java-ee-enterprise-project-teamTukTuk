@@ -3,6 +3,7 @@ package com.codecool.enterpriseproject.controller;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
@@ -161,16 +162,14 @@ public class UserController {
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
         String userEmail = request.queryParams( "email" );
-        String pswd = request.queryParams( "password" );
+        String PlainPassword = request.queryParams( "password" );
         User user = dbHandler.findUserByUserByEmail( em, userEmail );
-        if (user != null) {
-            if (pswd.equals( user.getPassWord() )) {
-                request.session(true);
-                request.session().attribute( "id", user.getId() );
-                request.session().attribute( "email", user.getEmail() );
-                response.redirect( "/personality_test" );
-            }
-            return "rosszpw";
+
+        if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
+            request.session(true);
+            request.session().attribute("id", user.getId());
+            request.session().attribute("email", user.getEmail());
+            return "success";
         }
         return "";
     }
