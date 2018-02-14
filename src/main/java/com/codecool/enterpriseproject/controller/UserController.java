@@ -63,6 +63,7 @@ public class UserController {
                     params.get("preference")
             );
             dbHandler.add(user, em );
+            logger.info("form data is valid.");
             result.add("Your account has been created!");
             return createHashMap(result, true);
         } else {
