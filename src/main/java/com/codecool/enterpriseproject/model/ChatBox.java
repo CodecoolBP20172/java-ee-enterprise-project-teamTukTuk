@@ -1,6 +1,10 @@
 package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
+@NamedQueries({
+        @NamedQuery( name = "chatbox.getChatBox", query = "SELECT c FROM ChatBox c WHERE (c.firstUser = :user OR c.secondUser = :user) AND c.active = true "),
+        @NamedQuery(name = "chatBox.getUsersWeMet", query = "SELECT c FROM ChatBox AS c WHERE c.firstUser = :user")} )
+
 
 @Entity
 public class ChatBox {
@@ -15,9 +19,12 @@ public class ChatBox {
     @OneToOne
     private User secondUser;
 
+    private boolean active;
+
     public ChatBox(User firstUser, User secondUser) {
         this.firstUser = firstUser;
         this.secondUser = secondUser;
+        this.active = true;
     }
 
     public ChatBox() {
