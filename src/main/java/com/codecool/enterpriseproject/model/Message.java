@@ -2,6 +2,7 @@ package com.codecool.enterpriseproject.model;
 
 import javax.persistence.*;
 import java.util.Date;
+@NamedQueries( {@NamedQuery( name = "message.getMessages", query = "SELECT m FROM Message m JOIN m.chatBox c WHERE c.threadId = :id ")} )
 
 @Entity
 public class Message {

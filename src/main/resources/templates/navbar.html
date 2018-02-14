@@ -4,12 +4,19 @@
 <div th:fragment="user_section">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid rounded-0">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Dani's dating site</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" data-target="#login" class="login_modal_toggle"><span class="glyphicon glyphicon-log-in"></span><span class="login_text">Login</span></a></li>
-            </ul>
+            <div th:switch="${user}">
+                <div th:case="null">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/">Dani's dating site</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" data-target="#login" class="login_modal_toggle"><span class="glyphicon glyphicon-log-in"></span><span class="login_text">Login</span></a></li>
+                    </ul>
+                </div>
+                <ul th:case="${user}" class="nav navbar-nav navbar-right">
+                    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span><span class="login_text">Logout</span></a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 

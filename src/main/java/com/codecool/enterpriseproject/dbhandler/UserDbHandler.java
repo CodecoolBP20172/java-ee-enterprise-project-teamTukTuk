@@ -6,6 +6,7 @@ import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -19,24 +20,29 @@ public class UserDbHandler {
         this.chatBoxDbHandler = chatBoxDbHandler;
     }
 
-    public void add(Object object, EntityManager em) {
+    public void add(User user, EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        em.persist( object );
+        em.persist( user );
         transaction.commit();
+        em.close();
     }
 
     //TODO make this method dynamic
-    public void updateUserPersonality(User user, EntityManager em, int personality) {
+    public void updateUserPersonality(User user, EntityManagerFactory emf, int personality) {
+        EntityManager em = emf.createEntityManager();
         User mergedUser = em.merge( user );
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         mergedUser.setPersonalityType(personality);
         mergedUser.setOptPartnerPersType(personality);
         transaction.commit();
+        em.close();
     }
 
-    public User findUserByEmail(EntityManager em, String email) {
+    public User findUserByEmail(EntityManagerFactory emf, String email) {
+        EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "user.getUserByEmail", User.class );
@@ -47,10 +53,12 @@ public class UserDbHandler {
             obj = user.get( 0 );
         }
         transaction.commit();
+        em.close();
         return (User) obj;
     }
 
-    public User findUserByPersonality(EntityManager em, Personality pers) {
+    public User findUserByPersonality(EntityManagerFactory emf, Personality pers) {
+        EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         Query query = em.createNamedQuery( "user.getUserByPersonality", User.class );
@@ -61,11 +69,13 @@ public class UserDbHandler {
             obj = user.get( 0 );
         }
         transaction.commit();
+        em.close();
         return (User) obj;
     }
 
-    public User findMatch(EntityManager em, User user) {
+    public User findMatch(EntityManagerFactory emf, User user) {
         //find a match with max 5(?) years difference
+        EntityManager em = emf.createEntityManager();
         int maxDifference = 5;
         int minPartnerAge = user.getAge() - maxDifference;
         int maxPartnerAge = user.getAge() + maxDifference;
@@ -83,9 +93,8 @@ public class UserDbHandler {
         query.setParameter( "optPartnerPersType", optPartnerPersType );
         List matches = query.getResultList();
         transaction.commit();
-
         Object obj = findTheOne(em, matches, user);
-
+        em.close();
         return (User) obj;
     }
 
