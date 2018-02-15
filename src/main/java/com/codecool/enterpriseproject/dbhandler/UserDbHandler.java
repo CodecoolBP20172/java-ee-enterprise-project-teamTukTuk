@@ -145,4 +145,14 @@ public class UserDbHandler {
         }
         return chatboxes;
     }
+
+    public void setInConversation(User user, boolean bool, EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        User mergedUser = em.merge(user);
+        transaction.begin();
+        mergedUser.setInConversation(bool);
+        transaction.commit();
+        em.close();
+    }
 }
