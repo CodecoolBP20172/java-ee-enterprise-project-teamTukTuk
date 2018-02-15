@@ -224,7 +224,7 @@ public class UserController {
     }
 
 
-    public static ModelAndView renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManagerFactory emf) {
+    public static String renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManagerFactory emf) {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(emf, user);
@@ -238,7 +238,7 @@ public class UserController {
         }
         params.put("user", user);
 
-        return new ModelAndView( params, "/demo" );
+        return "";
     }
 
     private static Map<String, String> toMap(List<NameValuePair> pairs){

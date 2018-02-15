@@ -22,15 +22,19 @@ public class ChatController {
 
     
     public static ModelAndView renderChatPage(Request request, Response response, UserDbHandler dbHandler, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf) {
+        System.out.println("belejöttem");
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, request.session().attribute("email"));
 
-        ChatBox chatBox = chatBoxDbHandler.getChatBox( user, emf );
-        int threadId = chatBox.getId();
-        List<Message> messages = chatBoxDbHandler.getMessages( threadId, emf );
-        params.put("messages", messages);
+        if (user.isInConversation()) {
+            ChatBox chatBox = chatBoxDbHandler.getChatBox( user, emf );
+            int threadId = chatBox.getId();
+            List<Message> messages = chatBoxDbHandler.getMessages( threadId, emf );
+            params.put("messages", messages);
+        }
+        boolean inConversation = user.isInConversation();
         params.put("user", user);
-        System.out.println(messages);
+        params.put("inConversation", inConversation);
         return new ModelAndView( params, "/dashboard" );
     }
 

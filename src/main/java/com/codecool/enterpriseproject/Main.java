@@ -30,8 +30,6 @@ public class Main {
 
         get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, chatBoxDbHandler, dbHandler, emf)) );
 
-        get( "/testChat", (Request req, Response res) -> ChatController.renderChatPage( req, res, dbHandler, chatBoxDbHandler, emf ) );
-
         get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
         post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, emf ), json() );
