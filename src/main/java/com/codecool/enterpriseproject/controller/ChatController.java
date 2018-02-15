@@ -43,4 +43,8 @@ public class ChatController {
         res.redirect("/dashboard");
         return "";
     }
+
+    public static String likeOrNot(Request request, Response response) {
+        return request.queryParams( "bitchSwitcher" ) == "YES" ? "yes" : "no";
+    }
 }

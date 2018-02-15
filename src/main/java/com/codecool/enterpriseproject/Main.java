@@ -53,6 +53,8 @@ public class Main {
             response.redirect("/");
             return "";
         });
+
+        post("/doyoulikeme", (request, response) -> new ThymeleafTemplateEngine().render( ChatController.likeOrNot(request, response) ) );
     }
 }
 
