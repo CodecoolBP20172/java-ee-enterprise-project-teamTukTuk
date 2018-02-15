@@ -3,7 +3,7 @@
 <body>
 <div th:fragment="register">
     <h4>Register now!</h4>
-    <form action="/register_user" method="post">
+    <form>
         <div class="input-group">
             <input id="email" type="text" name="email" placeholder="E-mail Address" required="true"/>
 
@@ -13,7 +13,7 @@
 
             <input id="password" type="password" name="password" placeholder="Password" required="true"/>
 
-            <input id="passwordAgain" type="password" name="password_again" placeholder="Re-enter Password"
+            <input id="password_again" type="password" name="password_again" placeholder="Re-enter Password"
                    required="true"/>
 
             <input id="age" type="number" name="age" placeholder="Your age" required="required"/>
@@ -35,15 +35,12 @@
                     <label><input type="radio" name="preference" value="female"/>Female</label>
                   </div>
             </div>
-
         </div>
-        <!--<div class="alert alert-danger">
-            <ul>
-                <li>Passwords do not match!</li>
-                <li>Username is already taken!</li>
+        <div class="alert alert-danger register_errors">
+            <ul class="errors">
             </ul>
-            </div>-->
-        <button class="btn btn-success btn-block register-button" type="submit">Create Account</button>
+        </div>
+        <button class="btn btn-success btn-block register-button" type="button">Create Account</button>
     </form>
 </div>
 </body>

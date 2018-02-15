@@ -15,12 +15,15 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
                 crossorigin="anonymous"></script>
+        <script defer="defer" src="/js/modal.js"></script>
         <script defer="defer" src="/js/user.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/main.css" />
     </head>
     <body>
         <div th:replace="navbar :: user_section"></div>
         <div id="mainContainer">
+            <div class="alert alert-success">
+            </div>
             <div class="row">
                 <div id="register_box" class="col-sm-4">
                     <div th:replace="register :: register"></div>

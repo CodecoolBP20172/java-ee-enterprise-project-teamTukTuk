@@ -3,13 +3,17 @@ package com.codecool.enterpriseproject.controller;
 import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.ChatBox;
-import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
+import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-
-import javax.persistence.EntityManager;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import static org.mindrot.jbcrypt.BCrypt.*;
+import java.nio.charset.Charset;
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +24,10 @@ import static spark.Spark.halt;
 
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     public static ModelAndView renderRegisterPage(Request req, Response res) {
         Map params = new HashMap<>();
-
         return new ModelAndView( params, "/index" );
     }
 
@@ -40,41 +45,140 @@ public class UserController {
         response.redirect("/dashboard");
     }
 
-    public static String registeringWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
-        if (request.queryParams( "password" ).equals( request.queryParams( "password_again" ) )) {
-            User user = new User( request.queryParams( "first_name" ), request.queryParams( "last_name" ), Integer.parseInt( request.queryParams( "age" ) ), request.queryParams( "password" ), request.queryParams( "email" ), false, request.queryParams( "gender" ), request.queryParams( "preference" ) );
-            System.out.println( request.queryParams( "password" ) );
-            dbHandler.add( user, emf );
-            request.session(true);
-            System.out.println(user.getId());
-            request.session().attribute( "email", user.getEmail() );
-            request.session().attribute("id", user.getId());
-            System.out.println(request.session().attribute("email").toString());
-            response.redirect( "/personality_test" );
+    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
+        List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
+        Map<String, String> params = toMap(pairs);
+
+        logger.info("validation started...");
+        List<String> result = validateRegister(params, dbHandler, emf);
+
+        if(result.isEmpty()) {
+
+            String hashedPassword = hashpw(params.get("password"), gensalt());
+            User user = new User(
+                    params.get("firstName").trim(),
+                    params.get("lastName").trim(),
+                    Integer.parseInt(params.get("age")),
+                    hashedPassword,
+                    params.get("email"),
+                    false,
+                    params.get("gender"),
+                    params.get("preference")
+            );
+            dbHandler.add(user, emf );
+            logger.info("form data is valid.");
+            result.add("Your account has been created!");
+            return createHashMap(result, true);
         } else {
-            return "rossz pw";
+
+            for (String error: result
+                 ) {
+                logger.error(error);
+            }
+            return createHashMap(result, false);
         }
-        return "";
+
+    }
+
+    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManagerFactory emf) {
+
+        List<String> issues = new ArrayList<>();
+
+        if(!checkForEmptyFields(params)) {
+            issues.add("All fields are required!");
+            return issues;
+        }
+
+        String email = params.get("email").trim();
+        String firstName = params.get("firstName").trim();
+        String lastName = params.get("lastName").trim();
+        String password = params.get("password");
+        String passwordAgain = params.get("passwordAgain");
+
+
+        logger.info("> checking passwords");
+        if (!password.equals(passwordAgain)) {
+            issues.add("Passwords do not match!");
+            return issues; // no point going further if passwords are wrong
+        }
+        logger.info("> checking name length");
+        if (firstName.length() < 4 || lastName.length() < 4) {
+            issues.add("Your name has to be at least 4 characters long!");
+        }
+
+        logger.info("> checking for invalid characters in name");
+        if (!firstName.matches("[a-zA-Z0-9]+") || !lastName.matches("[a-zA-Z0-9]+")) {
+            issues.add("Your name can only contain letters and numbers!");
+        }
+
+        User potentialUser = dbHandler.findUserByEmail(emf, email);
+        logger.info("> checking if email exists");
+        if (potentialUser != null) {
+            issues.add("The given email already exists!");
+        }
+
+        int age;
+        try {
+            age = Integer.parseInt(params.get("age"));
+        } catch(NumberFormatException ex) {
+            issues.add("Age could not be parsed!");
+            return issues;
+        }
+
+        if(age < 1 || age > 100) {
+            issues.add("Age is outside the reasonable interval!");
+        }
+
+        logger.info("validation finished.");
+        return issues;
+    }
+
+    private static boolean checkForEmptyFields(Map<String, String> fields) {
+
+        if(!fields.containsKey("gender") || !fields.containsKey("preference")) {
+            return false;
+        }
+        for (String field: fields.values()
+             ) {
+            if(field.equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static HashMap<String, String> createHashMap(List<String> list, boolean success) {
+        HashMap<String, String> result = new HashMap<>();
+
+        if(success) {
+            result.put("success", "true");
+        }
+        Integer counter = 0;
+        for (String listItem: list
+             ) {
+            result.put(counter.toString(), listItem);
+            counter++;
+        }
+        return result;
     }
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
         String userEmail = request.queryParams( "email" );
-        String pswd = request.queryParams( "password" );
+        String PlainPassword = request.queryParams( "password" );
         User user = dbHandler.findUserByEmail( emf, userEmail );
-        if (user != null) {
-            if (pswd.equals( user.getPassWord() )) {
-                request.session(true);
-                request.session().attribute( "id", user.getId() );
-                request.session().attribute( "email", user.getEmail() );
-                response.redirect( "/dashboard" );
-            }
-            return "rosszpw";
+
+        if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
+            request.session(true);
+            request.session().attribute("id", user.getId());
+            request.session().attribute("email", user.getEmail());
+            logger.info("session attributes set");
+            return "success";
         }
         return "";
     }
 
 
-    public static Object analyzeForm(Request req, Response res, EntityManagerFactory emf, UserDbHandler dbHandler) {
+    public static String analyzeForm(Request req, Response res, EntityManagerFactory emf, UserDbHandler dbHandler) {
         //TODO validate input
 
         //TODO analise the result and set personality
@@ -90,7 +194,7 @@ public class UserController {
 
         //redirect to front page
         res.redirect( "/user/page" );
-        return null;
+        return "";
     }
 
     private static int findPersonality(Request req) {
@@ -129,6 +233,15 @@ public class UserController {
         ChatBox chatBox = new ChatBox(user, optUser);
         chatBoxDbHandler.addNewChatBox(emf, chatBox);
         return new ModelAndView( params, "/demo" );
+    }
+
+    private static Map<String, String> toMap(List<NameValuePair> pairs){
+        Map<String, String> map = new HashMap<>();
+        for(int i=0; i<pairs.size(); i++){
+            NameValuePair pair = pairs.get(i);
+            map.put(pair.getName(), pair.getValue());
+        }
+        return map;
     }
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import static com.codecool.enterpriseproject.util.JsonUtil.json;
 import static spark.Spark.*;
 
 
@@ -33,9 +34,9 @@ public class Main {
 
         get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
-        post( "/register_user", (Request request, Response response) -> UserController.registeringWithValidate( request, response, dbHandler, emf ) );
+        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, emf ), json() );
 
-        post( "/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, emf ) );
+        post( "/api/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, emf ) );
 
         //need to check first if signed in, otherwise should be 404 -Attila
         get( "/personality_test", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) ) );
