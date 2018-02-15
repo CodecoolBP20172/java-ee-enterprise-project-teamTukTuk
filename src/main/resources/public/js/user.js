@@ -54,13 +54,15 @@ window.onload = function(){
             success: function (response) {
                 if(response === "success"){
                     $('#login').modal('hide');
+                    window.location.replace(window.location.href + "dashboard");
                 } else {
                     $('.login_error').show();
                 }
             },
             error: function(response) {
+                console.log(response);
                 $('.login_error').empty();
-                $('.login_error').append("<p>Sorry :( Could not connect to the server.</p>");
+                $('.login_error').append("<p>Sorry :( An error occured on the server!");
                 $('.login_error').show();
             }
         });

@@ -164,10 +164,11 @@ public class UserController {
     }
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
+        logger.info("loggin in...");
         String userEmail = request.queryParams( "email" );
         String PlainPassword = request.queryParams( "password" );
         User user = dbHandler.findUserByEmail( emf, userEmail );
-
+        System.out.println(user);
         if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
             request.session(true);
             request.session().attribute("id", user.getId());
