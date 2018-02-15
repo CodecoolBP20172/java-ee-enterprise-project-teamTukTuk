@@ -145,4 +145,20 @@ public class UserDbHandler {
         }
         return chatboxes;
     }
+
+    public User getUserById(int id, EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        Query query = em.createNamedQuery( "user.getUserById", User.class );
+        query.setParameter( "id", id );
+        List user = query.getResultList();
+        Object obj = null;
+        if (!user.isEmpty()) {
+            obj = user.get( 0 );
+        }
+        transaction.commit();
+        em.close();
+        return (User) obj;
+    }
 }
