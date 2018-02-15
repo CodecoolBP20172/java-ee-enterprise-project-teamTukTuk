@@ -43,4 +43,22 @@ public class ChatController {
         res.redirect("/dashboard");
         return "";
     }
+
+    public static String getNewPartner(Request request, Response response, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf, UserDbHandler dbHandler) {
+        System.out.println("bitch " + request.queryParams("bitchswitcher"));
+        int userId = Integer.parseInt(request.queryParams("userId"));
+        ChatBox chatBox = chatBoxDbHandler.getChatBox(dbHandler.getUserById(userId, emf), emf);
+        User user = dbHandler.getUserById(userId, emf);
+        User anotherUser = chatBox.getSecondUser();
+        System.out.println("egyiok juzer: " +user.getFirstName());
+        System.out.println("másik juzer: " +anotherUser.getFirstName());
+        dbHandler.setInConversation(user, false, emf);
+        dbHandler.setInConversation(anotherUser, false, emf);
+        chatBoxDbHandler.deactivateChatBox(emf, chatBox);
+        //User matchingNewPartner = dbHandler.findMatch(emf, user);
+        //ChatBox newChatBox = new ChatBox(user, matchingNewPartner);
+        //chatBoxDbHandler.addNewChatBox(emf, newChatBox);
+        response.redirect("/user/page");
+        return "";
+    }
 }

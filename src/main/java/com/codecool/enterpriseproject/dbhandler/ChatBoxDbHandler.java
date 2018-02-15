@@ -71,4 +71,31 @@ public class ChatBoxDbHandler {
         return (ChatBox) obj;
     }
 
+    public ChatBox getChatBoxById(int id, EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        Query query = em.createNamedQuery("ChatBox.getChatBoxById", ChatBox.class);
+        query.setParameter("id", id);
+        List chatbox = query.getResultList();
+        Object obj = null;
+        if (!chatbox.isEmpty()) {
+            obj = chatbox.get( 0 );
+        }
+        transaction.commit();
+        em.close();
+        return (ChatBox) obj;
+    }
+
+    public void deactivateChatBox(EntityManagerFactory emf, ChatBox chatBox) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        ChatBox mergedChatBox = em.merge(chatBox);
+        transaction.begin();
+        mergedChatBox.deactivateChatBox();
+        transaction.commit();
+        em.close();
+
+    }
+
 }

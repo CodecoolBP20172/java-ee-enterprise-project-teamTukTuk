@@ -30,5 +30,11 @@
             <button type="submit" >Send</button>
         </form>
     </div>
+    <div>
+        <form action="/doyoulikeme" method="post">
+            <input type="hidden" name="userId" th:value="${user.id}" />
+            <button class="btn btn-danger" type="submit">get another bitch</button>
+        </form>
+    </div>
 </body>
 </html>
