@@ -150,15 +150,26 @@ public class UserDbHandler {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        Query query = em.createNamedQuery( "user.getUserById", User.class );
-        query.setParameter( "id", id );
+        Query query = em.createNamedQuery("user.getUserById", User.class);
+        query.setParameter("id", id);
         List user = query.getResultList();
         Object obj = null;
         if (!user.isEmpty()) {
-            obj = user.get( 0 );
+            obj = user.get(0);
         }
         transaction.commit();
         em.close();
         return (User) obj;
+    }
+
+
+    public void setInConversation(User user, boolean bool, EntityManagerFactory emf) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        User mergedUser = em.merge(user);
+        transaction.begin();
+        mergedUser.setInConversation(bool);
+        transaction.commit();
+        em.close();
     }
 }
