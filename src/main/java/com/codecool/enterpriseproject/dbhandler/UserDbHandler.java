@@ -168,6 +168,7 @@ public class UserDbHandler {
         EntityTransaction transaction = em.getTransaction();
         User mergedUser = em.merge(user);
         transaction.begin();
+        System.out.println(user.getFirstName() + ": " + bool);
         mergedUser.setInConversation(bool);
         transaction.commit();
         em.close();

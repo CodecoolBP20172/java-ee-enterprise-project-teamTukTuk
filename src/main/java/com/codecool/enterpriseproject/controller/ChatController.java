@@ -49,11 +49,16 @@ public class ChatController {
         int userId = Integer.parseInt(request.queryParams("userId"));
         ChatBox chatBox = chatBoxDbHandler.getChatBox(dbHandler.getUserById(userId, emf), emf);
         User user = dbHandler.getUserById(userId, emf);
+        User anotherUser = chatBox.getSecondUser();
+        System.out.println("egyiok juzer: " +user.getFirstName());
+        System.out.println("másik juzer: " +anotherUser.getFirstName());
+        dbHandler.setInConversation(user, false, emf);
+        dbHandler.setInConversation(anotherUser, false, emf);
         chatBoxDbHandler.deactivateChatBox(emf, chatBox);
-        User matchingNewPartner = dbHandler.findMatch(emf, user);
-        ChatBox newChatBox = new ChatBox(user, matchingNewPartner);
-        chatBoxDbHandler.addNewChatBox(emf, newChatBox);
-        response.redirect("/dashboard");
+        //User matchingNewPartner = dbHandler.findMatch(emf, user);
+        //ChatBox newChatBox = new ChatBox(user, matchingNewPartner);
+        //chatBoxDbHandler.addNewChatBox(emf, newChatBox);
+        response.redirect("/user/page");
         return "";
     }
 }
