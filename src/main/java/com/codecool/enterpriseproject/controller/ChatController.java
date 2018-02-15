@@ -44,7 +44,16 @@ public class ChatController {
         return "";
     }
 
-    public static String likeOrNot(Request request, Response response) {
-        return request.queryParams( "bitchSwitcher" ) == "YES" ? "yes" : "no";
+    public static String getNewPartner(Request request, Response response, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf, UserDbHandler dbHandler) {
+        System.out.println("bitch " + request.queryParams("bitchswitcher"));
+        int userId = Integer.parseInt(request.queryParams("userId"));
+        ChatBox chatBox = chatBoxDbHandler.getChatBox(dbHandler.getUserById(userId, emf), emf);
+        User user = dbHandler.getUserById(userId, emf);
+        chatBoxDbHandler.deactivateChatBox(emf, chatBox);
+        User matchingNewPartner = dbHandler.findMatch(emf, user);
+        ChatBox newChatBox = new ChatBox(user, matchingNewPartner);
+        chatBoxDbHandler.addNewChatBox(emf, newChatBox);
+        response.redirect("/dashboard");
+        return "";
     }
 }
