@@ -32,12 +32,8 @@
     </div>
     <div>
         <form action="/doyoulikeme" method="post">
-            <input type="hidden" value="NO">
-            <button class="btn btn-danger" name="bitchswitcher" type="submit">get another bitch</button>
-        </form>
-        <form action="/doyoulikeme" method="post">
-            <input type="hidden" value="YES">
-            <button class="btn btn-success" name="bitchswitcher" type="submit">fugáznám</button>
+            <input type="hidden" name="userId" th:value="${user.id}" />
+            <button class="btn btn-danger" type="submit">get another bitch</button>
         </form>
     </div>
 </body>
