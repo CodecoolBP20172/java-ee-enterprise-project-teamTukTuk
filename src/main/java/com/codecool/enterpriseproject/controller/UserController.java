@@ -1,7 +1,8 @@
 package com.codecool.enterpriseproject.controller;
 
+import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
-import com.codecool.enterpriseproject.model.Personality;
+import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
@@ -12,8 +13,8 @@ import spark.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import static org.mindrot.jbcrypt.BCrypt.*;
-import javax.persistence.EntityManager;
 import java.nio.charset.Charset;
+import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,17 +39,18 @@ public class UserController {
 
     public static void checkIfInSession(Request request, Response response) {
         if (request.session().attribute( "id" ) == null) {
-            response.redirect( "/" );
-            halt( "Unauthorized access" );
+            response.redirect("/");
+            halt("Unauthorized access");
         }
+        response.redirect("/dashboard");
     }
 
-    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
+    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
         List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
         Map<String, String> params = toMap(pairs);
 
         logger.info("validation started...");
-        List<String> result = validateRegister(params, dbHandler, em);
+        List<String> result = validateRegister(params, dbHandler, emf);
 
         if(result.isEmpty()) {
 
@@ -63,7 +65,7 @@ public class UserController {
                     params.get("gender"),
                     params.get("preference")
             );
-            dbHandler.add(user, em );
+            dbHandler.add(user, emf );
             logger.info("form data is valid.");
             result.add("Your account has been created!");
             return createHashMap(result, true);
@@ -78,7 +80,7 @@ public class UserController {
 
     }
 
-    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManager em) {
+    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManagerFactory emf) {
 
         List<String> issues = new ArrayList<>();
 
@@ -109,7 +111,7 @@ public class UserController {
             issues.add("Your name can only contain letters and numbers!");
         }
 
-        User potentialUser = dbHandler.findUserByUserByEmail(em, email);
+        User potentialUser = dbHandler.findUserByEmail(emf, email);
         logger.info("> checking if email exists");
         if (potentialUser != null) {
             issues.add("The given email already exists!");
@@ -160,38 +162,39 @@ public class UserController {
         return result;
     }
 
-    public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManager em) {
+    public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
         String userEmail = request.queryParams( "email" );
         String PlainPassword = request.queryParams( "password" );
-        User user = dbHandler.findUserByUserByEmail( em, userEmail );
+        User user = dbHandler.findUserByEmail( emf, userEmail );
 
         if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
             request.session(true);
             request.session().attribute("id", user.getId());
             request.session().attribute("email", user.getEmail());
+            logger.info("session attributes set");
             return "success";
         }
         return "";
     }
 
 
-    public static Object analyzeForm(Request req, Response res, EntityManager em, UserDbHandler dbHandler) {
+    public static String analyzeForm(Request req, Response res, EntityManagerFactory emf, UserDbHandler dbHandler) {
         //TODO validate input
 
         //TODO analise the result and set personality
         //personality is found here, but need to set it for the user
         System.out.println((String) req.session().attribute("email"));
-        User user = dbHandler.findUserByUserByEmail(em, req.session().attribute("email"));
+        User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
         System.out.println(user.toString());
         int personalityType = findPersonality( req );
-        dbHandler.updateUserPersonality(user, em, personalityType );
+        dbHandler.updateUserPersonality(user, emf, personalityType );
         System.out.println( "personality type of the user: " + personalityType );
 
         //TODO popup thx for filling the form
 
         //redirect to front page
         res.redirect( "/user/page" );
-        return null;
+        return "";
     }
 
     private static int findPersonality(Request req) {
@@ -219,16 +222,16 @@ public class UserController {
         return mostFrequentValue;
     }
 
-    public static ModelAndView renderUserPage(Request req, Response res, UserDbHandler dbHandler, EntityManager em) {
-        Map params = new HashMap<>();
-        User user = dbHandler.findUserByUserByEmail(em, req.session().attribute("email"));
-        Personality pers = user.getPersonalityType();
-        Personality optPers = user.getOptPartnerPersType();
-        User optUser = dbHandler.findUserByPersonality(em, optPers);
-        String optName = optUser.getFirstName();
-        params.put("currenUser", user);
-        params.put("match", optUser);
 
+    public static ModelAndView renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManagerFactory emf) {
+        Map params = new HashMap<>();
+        User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
+        User optUser = dbHandler.findMatch(emf, user);
+
+        params.put("user", user);
+        params.put("match", optUser);
+        ChatBox chatBox = new ChatBox(user, optUser);
+        chatBoxDbHandler.addNewChatBox(emf, chatBox);
         return new ModelAndView( params, "/demo" );
     }
 
