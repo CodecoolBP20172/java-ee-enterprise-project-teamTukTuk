@@ -20,7 +20,8 @@ public class DataUtil {
 
         List<String> issues = new ArrayList<>();
 
-        if(!checkForEmptyFields(params)) {
+        String[] keys = {"gender", "preference"};
+        if(!checkForEmptyFields(params, keys)) {
             issues.add("All fields are required!");
             return issues;
         }
@@ -71,11 +72,15 @@ public class DataUtil {
     }
 
 
-    private static boolean checkForEmptyFields(Map<String, String> fields) {
+    private static boolean checkForEmptyFields(Map<String, String> fields, String[] keys) {
 
-        if(!fields.containsKey("gender") || !fields.containsKey("preference")) {
-            return false;
+        for (String key: keys
+             ) {
+            if (!fields.containsKey(key)) {
+                return false;
+            }
         }
+
         for (String field: fields.values()
                 ) {
             if(field.equals("")) {
