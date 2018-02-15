@@ -31,6 +31,7 @@ public class User {
     private Personality optPartnerPersType;
     private String passWord;
     private String email;
+
     private boolean inConversation;
 
     public Gender getGender() {
@@ -166,5 +167,13 @@ public class User {
             case 8: this.optPartnerPersType = partnerGender == Gender.male ? Personality.PEACEMAKER : Personality.LOYALIST; break;
             case 9: this.optPartnerPersType = partnerGender == Gender.male ? Personality.ENTHUSIAST : Personality.CHALLENGER; break;
         }
+    }
+
+    public boolean isInConversation() {
+        return inConversation;
+    }
+
+    public void setInConversation(boolean bool) {
+        this.inConversation = bool;
     }
 }

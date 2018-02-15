@@ -228,10 +228,16 @@ public class UserController {
         User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(emf, user);
 
+        if (optUser!=null) {
+            ChatBox chatBox = new ChatBox(user, optUser);
+            chatBoxDbHandler.addNewChatBox(emf, chatBox);
+            dbHandler.setInConversation(user, true, emf);
+            dbHandler.setInConversation(optUser, true, emf);
+        }
+
         params.put("user", user);
         params.put("match", optUser);
-        ChatBox chatBox = new ChatBox(user, optUser);
-        chatBoxDbHandler.addNewChatBox(emf, chatBox);
+
         return new ModelAndView( params, "/demo" );
     }
 
