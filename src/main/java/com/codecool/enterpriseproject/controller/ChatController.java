@@ -9,18 +9,15 @@ import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static spark.Spark.redirect;
 
 public class ChatController {
 
-    
     public static ModelAndView renderChatPage(Request request, Response response, UserDbHandler dbHandler, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf) {
         System.out.println("belejöttem");
         Map params = new HashMap<>();

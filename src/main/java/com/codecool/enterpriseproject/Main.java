@@ -4,12 +4,10 @@ import com.codecool.enterpriseproject.controller.ChatController;
 import com.codecool.enterpriseproject.controller.UserController;
 import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
-import com.codecool.enterpriseproject.model.User;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 

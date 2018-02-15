@@ -4,6 +4,7 @@ import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
+import com.codecool.enterpriseproject.util.DataUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +27,20 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+
     public static ModelAndView renderRegisterPage(Request req, Response res) {
         Map params = new HashMap<>();
+
         return new ModelAndView( params, "/index" );
     }
+
 
     public static ModelAndView renderPersonalityTest(Request req, Response res) {
         Map params = new HashMap<>();
 
         return new ModelAndView( params, "/personality" );
     }
+
 
     public static void checkIfInSession(Request request, Response response) {
         if (request.session().attribute( "id" ) == null) {
@@ -46,12 +51,13 @@ public class UserController {
         }
     }
 
+
     public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
         List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
         Map<String, String> params = toMap(pairs);
 
         logger.info("validation started...");
-        List<String> result = validateRegister(params, dbHandler, emf);
+        List<String> result = DataUtil.validateRegister(params, dbHandler, emf);
 
         if(result.isEmpty()) {
 
@@ -69,112 +75,34 @@ public class UserController {
             dbHandler.add(user, emf );
             logger.info("form data is valid.");
             result.add("Your account has been created!");
-            return createHashMap(result, true);
+            return DataUtil.createHashMap(result, true);
+
         } else {
 
             for (String error: result
                  ) {
                 logger.error(error);
             }
-            return createHashMap(result, false);
+
+            return DataUtil.createHashMap(result, false);
         }
-
-    }
-
-    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManagerFactory emf) {
-
-        List<String> issues = new ArrayList<>();
-
-        if(!checkForEmptyFields(params)) {
-            issues.add("All fields are required!");
-            return issues;
-        }
-
-        String email = params.get("email").trim();
-        String firstName = params.get("firstName").trim();
-        String lastName = params.get("lastName").trim();
-        String password = params.get("password");
-        String passwordAgain = params.get("passwordAgain");
-
-
-        logger.info("> checking passwords");
-        if (!password.equals(passwordAgain)) {
-            issues.add("Passwords do not match!");
-            return issues; // no point going further if passwords are wrong
-        }
-        logger.info("> checking name length");
-        if (firstName.length() < 4 || lastName.length() < 4) {
-            issues.add("Your name has to be at least 4 characters long!");
-        }
-
-        logger.info("> checking for invalid characters in name");
-        if (!firstName.matches("[a-zA-Z0-9]+") || !lastName.matches("[a-zA-Z0-9]+")) {
-            issues.add("Your name can only contain letters and numbers!");
-        }
-
-        User potentialUser = dbHandler.findUserByEmail(emf, email);
-        logger.info("> checking if email exists");
-        if (potentialUser != null) {
-            issues.add("The given email already exists!");
-        }
-
-        int age;
-        try {
-            age = Integer.parseInt(params.get("age"));
-        } catch(NumberFormatException ex) {
-            issues.add("Age could not be parsed!");
-            return issues;
-        }
-
-        if(age < 1 || age > 100) {
-            issues.add("Age is outside the reasonable interval!");
-        }
-
-        logger.info("validation finished.");
-        return issues;
-    }
-
-    private static boolean checkForEmptyFields(Map<String, String> fields) {
-
-        if(!fields.containsKey("gender") || !fields.containsKey("preference")) {
-            return false;
-        }
-        for (String field: fields.values()
-             ) {
-            if(field.equals("")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static HashMap<String, String> createHashMap(List<String> list, boolean success) {
-        HashMap<String, String> result = new HashMap<>();
-
-        if(success) {
-            result.put("success", "true");
-        }
-        Integer counter = 0;
-        for (String listItem: list
-             ) {
-            result.put(counter.toString(), listItem);
-            counter++;
-        }
-        return result;
     }
 
     public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
+        logger.info("loggin in...");
         String userEmail = request.queryParams( "email" );
         String PlainPassword = request.queryParams( "password" );
         User user = dbHandler.findUserByEmail( emf, userEmail );
-
+        System.out.println(user);
         if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
             request.session(true);
             request.session().attribute("id", user.getId());
             request.session().attribute("email", user.getEmail());
             logger.info("session attributes set");
+
             return "success";
         }
+
         return "";
     }
 
@@ -195,16 +123,20 @@ public class UserController {
 
         //redirect to front page
         res.redirect( "/user/page" );
+
         return "";
     }
+
 
     private static int findPersonality(Request req) {
         List<Integer> answers = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             answers.add( Integer.parseInt( req.queryParams( "q" + i ) ) );
         }
+
         return mostFrequent( answers );
     }
+
 
     private static Integer mostFrequent(List<Integer> list) {
         Map<Integer, Integer> counterMap = new HashMap<>();
@@ -220,6 +152,7 @@ public class UserController {
                 mostFrequentValue = valueAsKey;
             }
         }
+
         return mostFrequentValue;
     }
 
@@ -241,12 +174,13 @@ public class UserController {
         return "";
     }
 
+
     private static Map<String, String> toMap(List<NameValuePair> pairs){
         Map<String, String> map = new HashMap<>();
-        for(int i=0; i<pairs.size(); i++){
-            NameValuePair pair = pairs.get(i);
+        for (NameValuePair pair : pairs) {
             map.put(pair.getName(), pair.getValue());
         }
+
         return map;
     }
 
