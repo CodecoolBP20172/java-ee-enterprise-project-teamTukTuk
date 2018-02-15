@@ -4,6 +4,7 @@ import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Message;
+import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 import spark.ModelAndView;
 import spark.Request;
@@ -22,7 +23,6 @@ public class ChatController {
         System.out.println("belejöttem");
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, request.session().attribute("email"));
-
         if (user.isInConversation()) {
             ChatBox chatBox = chatBoxDbHandler.getChatBox( user, emf );
             int threadId = chatBox.getId();

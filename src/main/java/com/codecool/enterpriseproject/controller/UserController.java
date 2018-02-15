@@ -3,6 +3,7 @@ package com.codecool.enterpriseproject.controller;
 import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
 import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.ChatBox;
+import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.util.DataUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -158,10 +159,18 @@ public class UserController {
 
 
     public static String renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManagerFactory emf) {
+        System.out.println("RENDER JUZER PÉDZS");
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(emf, user);
-
+        Personality pers = user.getPersonalityType();
+        System.out.println("pers" + pers);
+        if (pers == null) {
+            System.out.println("wtf");
+            res.redirect("/personality_test");
+            params.put("user", user);
+            return "";
+        }
         if (optUser!=null) {
             ChatBox chatBox = new ChatBox(user, optUser);
             chatBoxDbHandler.addNewChatBox(emf, chatBox);

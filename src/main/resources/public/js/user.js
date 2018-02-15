@@ -54,7 +54,7 @@ window.onload = function(){
             success: function (response) {
                 if(response === "success"){
                     $('#login').modal('hide');
-                    window.location.replace(window.location.href + "dashboard");
+                    window.location.replace(window.location.href + "user/page");
                 } else {
                     $('.login_error').show();
                 }
