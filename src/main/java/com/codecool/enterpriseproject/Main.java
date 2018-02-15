@@ -49,6 +49,8 @@ public class Main {
             response.redirect("/");
             return "";
         });
+
+        post("/doyoulikeme", (request, response) -> new ThymeleafTemplateEngine().render(ChatController.getNewPartner(request, response, chatBoxDbHandler, emf, dbHandler)));
     }
 }
 
