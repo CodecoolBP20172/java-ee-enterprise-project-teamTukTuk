@@ -2,8 +2,9 @@ package com.codecool.enterpriseproject;
 
 import com.codecool.enterpriseproject.controller.ChatController;
 import com.codecool.enterpriseproject.controller.UserController;
-import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
-import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.service.ChatBoxService;
+import com.codecool.enterpriseproject.service.MessageService;
+import com.codecool.enterpriseproject.service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -21,30 +22,31 @@ public class Main {
         staticFileLocation( "/public" );
         EntityManagerFactory emf = Persistence.createEntityManagerFactory( "enterprisePU" );
 
-        ChatBoxDbHandler chatBoxDbHandler = new ChatBoxDbHandler();
-        UserDbHandler dbHandler = new UserDbHandler(chatBoxDbHandler);
+        ChatBoxService chatBoxService = new ChatBoxService();
+        UserService userService = new UserService(chatBoxService);
+        MessageService messageService = new MessageService();
 
         before( "/user/*", UserController::checkIfInSession );
 
-        get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, chatBoxDbHandler, dbHandler, emf)) );
+        get( "/user/page", (request, response) -> new ThymeleafTemplateEngine().render(UserController.renderUserPage(request, response, chatBoxService, userService, emf)) );
 
-        get( "/testChat", (Request req, Response res) -> ChatController.renderChatPage( req, res, dbHandler, chatBoxDbHandler, emf ) );
+        get( "/testChat", (Request req, Response res) -> ChatController.renderChatPage( req, res, userService, chatBoxService, emf, messageService ) );
 
         get( "/", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderRegisterPage( req, res ) ) );
 
-        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, dbHandler, emf ), json() );
+        post( "/api/register", (Request request, Response response) -> UserController.handleRegisterInput( request, response, userService, emf ), json() );
 
-        post( "/api/login", (request, response) -> UserController.loginWithValidate( request, response, dbHandler, emf ) );
+        post( "/api/login", (request, response) -> UserController.loginWithValidate( request, response, userService, emf ) );
 
         //need to check first if signed in, otherwise should be 404 -Attila
         get( "/personality_test", (Request req, Response res) -> new ThymeleafTemplateEngine().render( UserController.renderPersonalityTest( req, res ) ) );
 
         post( "/set_personality", (Request req, Response res) ->
-                new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , emf, dbHandler) ) );
+                new ThymeleafTemplateEngine().render( UserController.analyzeForm( req, res , emf, userService) ) );
 
-        get("/dashboard", (Request req, Response res) -> new ThymeleafTemplateEngine().render(ChatController.renderChatPage(req, res, dbHandler, chatBoxDbHandler, emf)));
+        get("/dashboard", (Request req, Response res) -> new ThymeleafTemplateEngine().render(ChatController.renderChatPage(req, res, userService, chatBoxService, emf, messageService)));
 
-        post("post_message", (Request request, Response response) -> new ThymeleafTemplateEngine().render(ChatController.writeMessageIntoDB(request, response, dbHandler, chatBoxDbHandler, emf)) );
+        post("post_message", (Request request, Response response) -> new ThymeleafTemplateEngine().render(ChatController.writeMessageIntoDB(request, response, userService, chatBoxService, emf, messageService)) );
 
         get("/logout", (request, response) -> {
             request.session().invalidate();
@@ -52,7 +54,7 @@ public class Main {
             return "";
         });
 
-        post("/doyoulikeme", (request, response) -> new ThymeleafTemplateEngine().render(ChatController.getNewPartner(request, response, chatBoxDbHandler, emf, dbHandler)));
+        post("/doyoulikeme", (request, response) -> new ThymeleafTemplateEngine().render(ChatController.getNewPartner(request, response, chatBoxService, emf, userService)));
     }
 }
 

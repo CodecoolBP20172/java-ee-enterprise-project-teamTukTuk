@@ -1,4 +1,4 @@
-package com.codecool.enterpriseproject.dbhandler;
+package com.codecool.enterpriseproject.service;
 
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Gender;
@@ -12,22 +12,14 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDbHandler {
+public class UserService extends BaseService{
 
-    private ChatBoxDbHandler chatBoxDbHandler;
+    private ChatBoxService chatBoxService;
 
-    public UserDbHandler(ChatBoxDbHandler chatBoxDbHandler) {
-        this.chatBoxDbHandler = chatBoxDbHandler;
+    public UserService(ChatBoxService chatBoxService) {
+        this.chatBoxService = chatBoxService;
     }
 
-    public void add(User user, EntityManagerFactory emf) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist( user );
-        transaction.commit();
-        em.close();
-    }
 
     //TODO make this method dynamic
     public void updateUserPersonality(User user, EntityManagerFactory emf, int personality) {
@@ -100,7 +92,7 @@ public class UserDbHandler {
 
     private Object findTheOne(EntityManager em, List matches, User user) {
         Object theOne = null;
-        List pastChatboxes = chatBoxDbHandler.findPastChatBoxes(em, user);
+        List pastChatboxes = chatBoxService.findPastChatBoxes(em, user);
 
         //these should be tested if you can convert Objects to ChatBoxes
         //and then to a List of Users like this

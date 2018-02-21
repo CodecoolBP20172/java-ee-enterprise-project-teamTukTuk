@@ -1,7 +1,7 @@
 package com.codecool.enterpriseproject.controller;
 
-import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
-import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
+import com.codecool.enterpriseproject.service.ChatBoxService;
+import com.codecool.enterpriseproject.service.UserService;
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
+    public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserService dbHandler, EntityManagerFactory emf) {
         List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
         Map<String, String> params = toMap(pairs);
 
@@ -66,7 +66,7 @@ public class UserController {
                     params.get("gender"),
                     params.get("preference")
             );
-            dbHandler.add(user, emf );
+            dbHandler.addObject(user, emf );
             logger.info("form data is valid.");
             result.add("Your account has been created!");
             return createHashMap(result, true);
@@ -81,7 +81,7 @@ public class UserController {
 
     }
 
-    private static List<String> validateRegister(Map<String, String> params, UserDbHandler dbHandler, EntityManagerFactory emf) {
+    private static List<String> validateRegister(Map<String, String> params, UserService dbHandler, EntityManagerFactory emf) {
 
         List<String> issues = new ArrayList<>();
 
@@ -163,7 +163,7 @@ public class UserController {
         return result;
     }
 
-    public static String loginWithValidate(Request request, Response response, UserDbHandler dbHandler, EntityManagerFactory emf) {
+    public static String loginWithValidate(Request request, Response response, UserService dbHandler, EntityManagerFactory emf) {
         String userEmail = request.queryParams( "email" );
         String PlainPassword = request.queryParams( "password" );
         User user = dbHandler.findUserByEmail( emf, userEmail );
@@ -179,7 +179,7 @@ public class UserController {
     }
 
 
-    public static String analyzeForm(Request req, Response res, EntityManagerFactory emf, UserDbHandler dbHandler) {
+    public static String analyzeForm(Request req, Response res, EntityManagerFactory emf, UserService dbHandler) {
         //TODO validate input
 
         //TODO analise the result and set personality
@@ -224,14 +224,14 @@ public class UserController {
     }
 
 
-    public static ModelAndView renderUserPage(Request req, Response res, ChatBoxDbHandler chatBoxDbHandler, UserDbHandler dbHandler, EntityManagerFactory emf) {
+    public static ModelAndView renderUserPage(Request req, Response res, ChatBoxService chatBoxService, UserService dbHandler, EntityManagerFactory emf) {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, req.session().attribute("email"));
         User optUser = dbHandler.findMatch(emf, user);
 
         if (optUser!=null) {
             ChatBox chatBox = new ChatBox(user, optUser);
-            chatBoxDbHandler.addNewChatBox(emf, chatBox);
+            chatBoxService.addObject(chatBox, emf);
             dbHandler.setInConversation(user, true, emf);
             dbHandler.setInConversation(optUser, true, emf);
             params.put("match", optUser);
