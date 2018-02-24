@@ -11,4 +11,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findUsersByAgeGreaterThanEqualAndAgeLessThanEqualAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(int minAge, int maxAge, Gender gender, Gender partnerGender, Personality personality);
 
+    User findUserByEmail(String email);
+
+    User findUserByPersonalityType(Personality personality);
 }

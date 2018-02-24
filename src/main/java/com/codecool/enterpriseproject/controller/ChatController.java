@@ -45,8 +45,8 @@ public class ChatController {
     public static String getNewPartner(Request request, Response response, ChatBoxService chatBoxService, EntityManagerFactory emf, UserService dbHandler) {
         System.out.println("bitch " + request.queryParams("bitchswitcher"));
         int userId = Integer.parseInt(request.queryParams("userId"));
-        ChatBox chatBox = chatBoxService.getChatBox(dbHandler.getUserById(userId, emf), emf);
-        User user = dbHandler.getUserById(userId, emf);
+        ChatBox chatBox = chatBoxService.getChatBox(dbHandler.findUserById(userId, emf), emf);
+        User user = dbHandler.findUserById(userId, emf);
         User anotherUser = chatBox.getSecondUser();
         System.out.println("egyiok juzer: " +user.getFirstName());
         System.out.println("másik juzer: " +anotherUser.getFirstName());
