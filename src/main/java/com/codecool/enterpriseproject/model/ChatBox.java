@@ -12,7 +12,7 @@ public class ChatBox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int threadId;
+    private long threadId;
 
     @OneToOne
     private User firstUser;
@@ -32,7 +32,7 @@ public class ChatBox {
     public ChatBox() {
     }
 
-    public int getId() {
+    public long getId() {
         return threadId;
     }
 

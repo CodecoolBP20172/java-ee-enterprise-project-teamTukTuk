@@ -5,6 +5,8 @@ import com.codecool.enterpriseproject.model.User;
 
 import javax.persistence.EntityManager;
 import com.codecool.enterpriseproject.model.Message;
+import com.codecool.enterpriseproject.repository.ChatBoxRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -13,59 +15,26 @@ import java.util.List;
 
 public class ChatBoxService extends BaseService {
 
+    @Autowired
+    ChatBoxRepository chatBoxRepository;
 
-    public List findPastChatBoxes(EntityManager em, User user) {
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        Query query = em.createNamedQuery( "chatBox.getUsersWeMet", ChatBox.class );
-        query.setParameter( "user", user );
-        List usersWeMet = query.getResultList();
-        transaction.commit();
-        return usersWeMet;
+    public List<ChatBox> findPastChatBoxes(User user) {
+        return chatBoxRepository.getChatBoxesByFirstUser(user);
     }
 
 
-    public ChatBox getChatBox(User user, EntityManagerFactory emf) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        Query query = em.createNamedQuery( "chatbox.getChatBox", ChatBox.class );
-        query.setParameter( "user", user );
-        List chatbox = query.getResultList();
-        Object obj = null;
-        if (!chatbox.isEmpty()) {
-            obj = chatbox.get( 0 );
-        }
-        transaction.commit();
-        em.close();
-        return (ChatBox) obj;
+    public ChatBox getChatBox(User user) {
+        Long id = user.getId();
+        return chatBoxRepository.getChatBoxByFirstUserOrSecondUserIdAndActiveTrue(user, id);
     }
 
-    public ChatBox getChatBoxById(int id, EntityManagerFactory emf) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        Query query = em.createNamedQuery("ChatBox.getChatBoxById", ChatBox.class);
-        query.setParameter("id", id);
-        List chatbox = query.getResultList();
-        Object obj = null;
-        if (!chatbox.isEmpty()) {
-            obj = chatbox.get( 0 );
-        }
-        transaction.commit();
-        em.close();
-        return (ChatBox) obj;
+    public ChatBox getChatBoxById(long id) {
+        return chatBoxRepository.getOne(id);
     }
 
-    public void deactivateChatBox(EntityManagerFactory emf, ChatBox chatBox) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        ChatBox mergedChatBox = em.merge(chatBox);
-        transaction.begin();
-        mergedChatBox.deactivateChatBox();
-        transaction.commit();
-        em.close();
-
+    public void deactivateChatBox(ChatBox chatBox) {
+        chatBox.deactivateChatBox();
+        chatBoxRepository.save(chatBox);
     }
 
 }
