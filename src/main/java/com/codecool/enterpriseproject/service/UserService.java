@@ -45,7 +45,7 @@ public class UserService extends BaseService {
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
         Personality optPartnerPersType = user.getOptPartnerPersType();
-        List<User> matches = userRepository.findUsersByAgeGreaterThanEqualAndAgeLessThanEqualAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(minPartnerAge, maxPartnerAge, gender, partnerGender, optPartnerPersType);
+        List<User> matches = userRepository.findUsersByAgeBetweenAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(minPartnerAge, maxPartnerAge, gender, partnerGender, optPartnerPersType);
         List<ChatBox> chatBoxes = chatBoxService.findPastChatBoxes(user);
         return matchFinderUtil.findTheOne(matches, chatBoxes);
     }
