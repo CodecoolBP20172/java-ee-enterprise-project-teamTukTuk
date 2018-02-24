@@ -4,6 +4,9 @@ import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Gender;
 import com.codecool.enterpriseproject.model.Personality;
 import com.codecool.enterpriseproject.model.User;
+import com.codecool.enterpriseproject.repository.UserRepository;
+import com.codecool.enterpriseproject.util.MatchFinderUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,11 +17,14 @@ import java.util.List;
 
 public class UserService extends BaseService{
 
-    private ChatBoxService chatBoxService;
+    @Autowired
+    UserRepository userRepository;
 
-    public UserService(ChatBoxService chatBoxService) {
-        this.chatBoxService = chatBoxService;
-    }
+    @Autowired
+    MatchFinderUtil matchFinderUtil;
+
+    @Autowired
+    ChatBoxService chatBoxService;
 
 
     //TODO make this method dynamic
@@ -74,69 +80,13 @@ public class UserService extends BaseService{
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
         Personality optPartnerPersType = user.getOptPartnerPersType();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        Query query = em.createNamedQuery( "user.findMatch", User.class );
-        query.setParameter( "minPartnerAge", minPartnerAge );
-        query.setParameter( "maxPartnerAge", maxPartnerAge );
-        query.setParameter( "gender", gender );
-        query.setParameter( "partnerGender", partnerGender );
-        query.setParameter( "optPartnerPersType", optPartnerPersType );
-        List matches = query.getResultList();
-        transaction.commit();
-        Object obj = findTheOne(em, matches, user);
-        em.close();
-        return (User) obj;
+        List<User> matches = userRepository.findUsersByAgeGreaterThanEqualAndAgeLessThanEqualAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(minPartnerAge, maxPartnerAge, gender, partnerGender, optPartnerPersType);
+        List<ChatBox> chatBoxes = chatBoxService.findPastChatBoxes(user);
+        return matchFinderUtil.findTheOne(matches, chatBoxes);
     }
 
-    private Object findTheOne(EntityManager em, List matches, User user) {
-        Object theOne = null;
-        List pastChatboxes = chatBoxService.findPastChatBoxes(em, user);
 
-        //these should be tested if you can convert Objects to ChatBoxes
-        //and then to a List of Users like this
-        ArrayList<ChatBox> chatboxes = setPastChatBoxes(pastChatboxes);
-        List usersMet = findUsersMet(chatboxes);
 
-        System.out.println("usersmet: " + usersMet);
-
-        if (matches.isEmpty()) {return null;}
-        boolean matchFound = false;
-        while (!matchFound) {
-            int lengthChecker = 0;
-            System.out.println("matches size: " + matches.size());
-            for (Object match : matches) {
-                lengthChecker += 1;
-                System.out.println("lenghtCh: " + lengthChecker);
-                if (!usersMet.contains(match)) {
-                    theOne = match;
-                    matchFound = true;
-                }
-                if (lengthChecker>=matches.size() && !matchFound) {
-                    //if the user have talked to all matches we return null
-                    return null;
-                }
-            }
-        }
-        return (User) theOne;
-    }
-
-    private List findUsersMet(ArrayList<ChatBox> chatboxes) {
-        List usersMet = new ArrayList();
-        for (ChatBox chatBox : chatboxes) {
-            usersMet.add(chatBox.getSecondUser());
-        }
-        return usersMet;
-    }
-
-    private ArrayList<ChatBox> setPastChatBoxes(List pastChatboxes) {
-        ArrayList<ChatBox> chatboxes = new ArrayList<>();
-        for (Object chatbox : pastChatboxes) {
-            chatboxes.add((ChatBox) chatbox);
-        }
-        return chatboxes;
-    }
 
     public User getUserById(int id, EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
