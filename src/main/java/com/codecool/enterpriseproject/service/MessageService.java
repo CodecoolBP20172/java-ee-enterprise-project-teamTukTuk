@@ -1,6 +1,7 @@
 package com.codecool.enterpriseproject.service;
 
 import com.codecool.enterpriseproject.model.Message;
+import com.codecool.enterpriseproject.repository.MessageRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -10,16 +11,10 @@ import java.util.List;
 
 public class MessageService extends BaseService {
 
+    MessageRepository messageRepository;
 
-    public List<Message> getMessages(int threadId, EntityManagerFactory emf) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        Query query = em.createNamedQuery( "message.getMessages", Message.class );
-        query.setParameter( "id", threadId );
-        List messages = query.getResultList();
-        transaction.commit();
-        em.close();
-        return messages;
+
+    public List<Message> getMessages(long threadId) {
+        return messageRepository.getAllByChatBoxId(threadId);
     }
 }
