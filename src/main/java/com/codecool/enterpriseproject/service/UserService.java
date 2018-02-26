@@ -7,9 +7,13 @@ import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.repository.UserRepository;
 import com.codecool.enterpriseproject.util.MatchFinderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserService extends BaseService {
 
     @Autowired
@@ -21,6 +25,9 @@ public class UserService extends BaseService {
     @Autowired
     ChatBoxService chatBoxService;
 
+    UserService() {
+
+    }
 
     //TODO make this method dynamic
     public void updateUserPersonality(User user, int personality) {

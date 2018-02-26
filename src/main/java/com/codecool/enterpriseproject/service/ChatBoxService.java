@@ -7,12 +7,14 @@ import javax.persistence.EntityManager;
 import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.repository.ChatBoxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.util.List;
 
+@Service
 public class ChatBoxService extends BaseService {
 
     @Autowired

@@ -6,6 +6,7 @@ import com.codecool.enterpriseproject.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+@
 public class MatchFinderUtil {
 
 

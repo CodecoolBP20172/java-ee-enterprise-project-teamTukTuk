@@ -7,44 +7,68 @@ import com.codecool.enterpriseproject.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import static org.mindrot.jbcrypt.BCrypt.*;
 import java.nio.charset.Charset;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static spark.Spark.halt;
-
+@Controller
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    public static ModelAndView renderRegisterPage(Request req, Response res) {
-        Map params = new HashMap<>();
-        return new ModelAndView( params, "/index" );
+    @Autowired
+    UserService userService;
+
+    @RequestMapping(value ="/index", method = RequestMethod.GET)
+    public String renderRegisterPage() {
+        return "index";
     }
 
-    public static ModelAndView renderPersonalityTest(Request req, Response res) {
-        Map params = new HashMap<>();
-
-        return new ModelAndView( params, "/personality" );
+    @RequestMapping(value ="/personality", method = RequestMethod.GET)
+    public String renderPersonalityTest() {
+        return "personality";
     }
 
-    public static void checkIfInSession(Request request, Response response) {
-        if (request.session().attribute( "id" ) == null) {
-            response.redirect("/");
-            halt("Unauthorized access");
-        } else {
-            response.redirect("/dashboard");
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public String checkIfInSession(HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/index";
+        }else{
+            return "dashboard";
         }
     }
+
+    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
+    public String login(@RequestParam("email") String email, @RequestParam("password") String password, HttpSession session) {
+        if(loginWithValidate(session, email, password).equals("success")) {
+            return "redirect:/dashboard";
+        }
+        return "redirect:/index";
+    }
+
+    //    public static void checkIfInSession(Request request, Response response) {
+    //        if (request.session().attribute( "id" ) == null) {
+    //            response.redirect("/");
+    //            halt("Unauthorized access");
+    //        } else {
+    //            response.redirect( "/dashboard");
+    //        }
+    //    }
+
 
     public static HashMap<String, String> handleRegisterInput(Request request, Response response, UserService dbHandler, EntityManagerFactory emf) {
         List<NameValuePair> pairs = URLEncodedUtils.parse(request.body(), Charset.defaultCharset());
@@ -163,15 +187,11 @@ public class UserController {
         return result;
     }
 
-    public static String loginWithValidate(Request request, Response response, UserService dbHandler, EntityManagerFactory emf) {
-        String userEmail = request.queryParams( "email" );
-        String PlainPassword = request.queryParams( "password" );
-        User user = dbHandler.findUserByEmail( emf, userEmail );
-
-        if (user != null && BCrypt.checkpw(PlainPassword, user.getPassWord() )) {
-            request.session(true);
-            request.session().attribute("id", user.getId());
-            request.session().attribute("email", user.getEmail());
+    private String loginWithValidate(HttpSession session, String email, String password) {
+        User user = userService.findUserByEmail(email);
+        if (user != null && BCrypt.checkpw(password, user.getPassWord() )) {
+            session.setAttribute("id", user.getId());
+            session.setAttribute("email", user.getEmail());
             logger.info("session attributes set");
             return "success";
         }

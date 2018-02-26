@@ -18,7 +18,6 @@ import java.util.Map;
 
 public class ChatController {
 
-    
     public static ModelAndView renderChatPage(Request request, Response response, UserService dbHandler, ChatBoxService chatBoxService, EntityManagerFactory emf, MessageService messageService) {
         Map params = new HashMap<>();
         User user = dbHandler.findUserByEmail(emf, request.session().attribute("email"));
