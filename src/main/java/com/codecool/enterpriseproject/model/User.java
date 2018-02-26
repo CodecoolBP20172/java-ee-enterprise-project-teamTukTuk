@@ -14,7 +14,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
     private int age;
 
@@ -22,12 +26,15 @@ public class User {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "partner_gender")
     private Gender partnerGender = Gender.male;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "personality_type")
     private Personality personalityType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "opt_partner_pers_type")
     private Personality optPartnerPersType;
     private String passWord;
     private String email;

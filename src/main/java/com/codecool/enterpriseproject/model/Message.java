@@ -12,6 +12,7 @@ public class Message {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name = "chatbox")
     private ChatBox chatBox;
     private Date date;
     private String message;

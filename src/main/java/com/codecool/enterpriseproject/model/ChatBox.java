@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 
 @Entity
+@Table(name = "chatbox")
 public class ChatBox {
 
     @Id
@@ -50,6 +51,22 @@ public class ChatBox {
 
     public void setSecondUser(User secondUser) {
         this.secondUser = secondUser;
+    }
+
+    public long getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(long threadId) {
+        this.threadId = threadId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void deactivateChatBox() {

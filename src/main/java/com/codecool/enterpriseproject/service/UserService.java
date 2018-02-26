@@ -7,14 +7,12 @@ import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.repository.UserRepository;
 import com.codecool.enterpriseproject.util.MatchFinderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService extends BaseService {
+public class UserService {
 
     @Autowired
     UserRepository userRepository;
@@ -33,6 +31,10 @@ public class UserService extends BaseService {
     public void updateUserPersonality(User user, int personality) {
         user.setPersonalityType(personality);
         user.setOptPartnerPersType(personality);
+        userRepository.save(user);
+    }
+
+    public void addUser(User user) {
         userRepository.save(user);
     }
 

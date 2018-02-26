@@ -1,7 +1,6 @@
 package com.codecool.enterpriseproject.util;
 
 import com.google.gson.Gson;
-import spark.ResponseTransformer;
 
 public class JsonUtil {
 
@@ -9,8 +8,5 @@ public class JsonUtil {
         return new Gson().toJson(object);
     }
 
-    public static ResponseTransformer json() {
-        return JsonUtil::toJson;
-    }
 
 }

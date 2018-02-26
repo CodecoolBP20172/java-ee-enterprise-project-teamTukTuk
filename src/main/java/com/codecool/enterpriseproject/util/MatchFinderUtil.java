@@ -2,11 +2,12 @@ package com.codecool.enterpriseproject.util;
 
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@
+@Component
 public class MatchFinderUtil {
 
 
