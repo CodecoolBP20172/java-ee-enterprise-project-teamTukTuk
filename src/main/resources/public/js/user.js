@@ -36,7 +36,7 @@ window.onload = function(){
                 $('.errors').empty();
                 $('.alert-success').empty();
 
-                if(JSON.parse(response).valid){
+                if(JSON.parse(response)["valid"] === true){
                     $('.register_errors').hide();
                     $('.alert-success').append("<strong>Success!</strong> Your account has been created.");
                     $(".alert-success").fadeTo(5000, 5000).slideUp(500, function(){
