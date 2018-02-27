@@ -46,7 +46,7 @@ public class ChatController {
         ChatBox chatBox = chatBoxService.getChatBox(user);
         Message message = new Message(chatBox, new Date(), text, user);
         messageService.addMessage(message);
-        return "redirect:dashboard";
+        return "redirect:/dashboard";
     }
 
     @RequestMapping(value = "/doyoulikeme", method = RequestMethod.POST)
@@ -57,6 +57,6 @@ public class ChatController {
         userService.setInConversation(user, false);
         userService.setInConversation(anotherUser, false);
         chatBoxService.deactivateChatBox(chatBox);
-        return "redirect:dashboard";
+        return "redirect:/dashboard";
     }
 }

@@ -59,10 +59,10 @@ public class UserController {
         return "personality";
     }
 
-
+    @RequestMapping(value = "/user/*", method = RequestMethod.GET)
     public String checkIfInSession() {
         if (session.getAttribute("id") == null) {
-            return "redirect:index";
+            return "redirect:/index";
         } else {
             return "dashboard";
         }
@@ -88,7 +88,6 @@ public class UserController {
 
     @RequestMapping(value = "/user/page", method = RequestMethod.GET)
     public String renderUserPage(HttpSession session, Model model) {
-//        checkIfInSession(session);
         User user = userService.findUserByEmail(String.valueOf(session.getAttribute("email")));
         User optUser = userService.findMatch(user);
         if (optUser != null) {

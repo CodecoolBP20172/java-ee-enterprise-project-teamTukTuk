@@ -54,9 +54,9 @@ public class AuthController {
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
         if (loginWithValidate(email, password).equals("success")) {
-            return "redirect:dashboard";
+            return "redirect:/dashboard";
         }
-        return "redirect:index";
+        return "redirect:/index";
     }
 
     @RequestMapping(value = "/api/register", method = RequestMethod.POST)
