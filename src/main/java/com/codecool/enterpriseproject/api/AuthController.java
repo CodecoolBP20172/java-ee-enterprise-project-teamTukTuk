@@ -6,10 +6,7 @@ import com.codecool.enterpriseproject.session.UserSession;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -52,6 +49,14 @@ public class AuthController {
             }
         }
         return true;
+    }
+
+    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
+    public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
+        if (loginWithValidate(email, password).equals("success")) {
+            return "redirect:dashboard";
+        }
+        return "redirect:index";
     }
 
     @RequestMapping(value = "/api/register", method = RequestMethod.POST)

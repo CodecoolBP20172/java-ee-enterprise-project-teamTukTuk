@@ -1,6 +1,5 @@
 package com.codecool.enterpriseproject.controller;
 
-import com.codecool.enterpriseproject.api.AuthController;
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.service.ChatBoxService;
@@ -9,7 +8,6 @@ import com.codecool.enterpriseproject.session.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +31,6 @@ public class UserController {
     @Autowired
     ChatBoxService chatBoxService;
 
-    @Autowired
-    AuthController authController;
 
     private static Integer mostFrequent(List<String> list) {
         Map<String, Integer> counterMap = new HashMap<>();
@@ -72,13 +68,6 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
-    public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
-        if (authController.loginWithValidate(email, password).equals("success")) {
-            return "redirect:dashboard";
-        }
-        return "redirect:index";
-    }
 
     @RequestMapping(value = "/set_personality", method = RequestMethod.POST)
     public String analyzeForm(@RequestParam("q1") String q1,
@@ -102,7 +91,7 @@ public class UserController {
 //        checkIfInSession(session);
         User user = userService.findUserByEmail(String.valueOf(session.getAttribute("email")));
         User optUser = userService.findMatch(user);
-        if (optUser!=null) {
+        if (optUser != null) {
             ChatBox chatBox = new ChatBox(user, optUser);
             chatBoxService.addChatBox(chatBox);
             userService.setInConversation(user, true);
