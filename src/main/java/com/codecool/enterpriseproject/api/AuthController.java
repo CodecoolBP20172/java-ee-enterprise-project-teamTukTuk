@@ -3,6 +3,7 @@ package com.codecool.enterpriseproject.api;
 import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.service.UserService;
 import com.codecool.enterpriseproject.session.UserSession;
+import com.codecool.enterpriseproject.util.JsonUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,30 +28,6 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    private static HashMap<String, String> createHashMap(List<String> list, boolean success) {
-        HashMap<String, String> result = new HashMap<>();
-
-        if (success) {
-            result.put("success", "true");
-        }
-        Integer counter = 0;
-        for (String listItem : list
-                ) {
-            result.put(counter.toString(), listItem);
-            counter++;
-        }
-        return result;
-    }
-
-    private static boolean checkForEmptyFields(UserJSON json) {
-        for (String field : json.getValues()) {
-            if (field.equals("")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
         if (loginWithValidate(email, password).equals("success")) {
@@ -59,13 +36,18 @@ public class AuthController {
         return "redirect:/index";
     }
 
-    @RequestMapping(value = "/api/register", method = RequestMethod.POST)
-    public HashMap<String, String> handleRegisterInput(@RequestBody UserJSON json) {
+    @PostMapping(value = "/api/register")
+    public String handleRegisterInput(@RequestBody UserJSON json) {
+
+        for (String item: json.getValues()
+             ) {
+            System.out.println(item);
+        }
 
         logger.info("validation started...");
-        List<String> result = validateRegister(json);
+        ErrorJSON result = validateRegister(json);
 
-        if (result.isEmpty()) {
+        if (result.isValid()) {
 
             String hashedPassword = hashpw(json.getPassword(), gensalt());
             User user = new User(
@@ -80,26 +62,19 @@ public class AuthController {
             );
             userService.addUser(user);
             logger.info("form data is valid.");
-            result.add("Your account has been created!");
-            return createHashMap(result, true);
-        } else {
-
-            for (String error : result
-                    ) {
-                logger.error(error);
-            }
-            return createHashMap(result, false);
         }
 
+        return JsonUtil.toJson(result);
     }
 
-    protected List<String> validateRegister(UserJSON json) {
+    protected ErrorJSON validateRegister(UserJSON json) {
 
-        List<String> issues = new ArrayList<>();
+         ErrorJSON errors = new ErrorJSON();
+         boolean isvalid = true;
 
-        if (!checkForEmptyFields(json)) {
-            issues.add("All fields are required!");
-            return issues;
+        if (json.containsEmptyFields()) {
+            errors.setAllFieldsRequired(true);
+            return errors;
         }
 
         String email = json.getEmail().trim();
@@ -111,39 +86,45 @@ public class AuthController {
 
         logger.info("> checking passwords");
         if (!password.equals(passwordAgain)) {
-            issues.add("Passwords do not match!");
-            return issues; // no point going further if passwords are wrong
+            errors.setPasswordMismatch(true);
+            return errors; // no point going further if passwords are wrong
         }
         logger.info("> checking name length");
         if (firstName.length() < 4 || lastName.length() < 4) {
-            issues.add("Your name has to be at least 4 characters long!");
+            errors.setTooShortName(true);
+            isvalid = false;
         }
 
         logger.info("> checking for invalid characters in name");
         if (!firstName.matches("[a-zA-Z0-9]+") || !lastName.matches("[a-zA-Z0-9]+")) {
-            issues.add("Your name can only contain letters and numbers!");
+            errors.setInvalidName(true);
+            isvalid = false;
         }
 
         User potentialUser = userService.findUserByEmail(email);
         logger.info("> checking if email exists");
         if (potentialUser != null) {
-            issues.add("The given email already exists!");
+            errors.setEmailExists(true);
+            isvalid = false;
         }
 
         int age;
         try {
             age = json.getAge();
         } catch (NumberFormatException ex) {
-            issues.add("Age could not be parsed!");
-            return issues;
+            errors.setCouldNotParseAge(true);
+            isvalid = false;
+            return errors;
         }
 
         if (age < 1 || age > 100) {
-            issues.add("Age is outside the reasonable interval!");
+            errors.setAgeOutsideInterval(true);
+            isvalid = false;
         }
 
         logger.info("validation finished.");
-        return issues;
+        errors.setValid(isvalid);
+        return errors;
     }
 
     public String loginWithValidate( String email, String password) {

@@ -3,6 +3,16 @@ window.onload = function(){
     $('.login_error').hide();
     $('.alert-success').hide();
 
+    var errorlist = {
+        "allFieldsRequired": "All fields are required!",
+        "passwordMismatch": "Passwords do not match!",
+        "tooShortName": "Your name is too short!",
+        "invalidName": "Your name contains invalid characters!",
+        "emailExists": "Your email already exists!",
+        "couldNotParseAge": "Age could not be parsed!",
+        "ageOutsideInterval":"Age is outside the interval!"}
+    
+
     $('.register-button').click(function(event){
         event.preventDefault();
         let data = {
@@ -18,13 +28,15 @@ window.onload = function(){
 
         $.ajax({
             type: 'POST',
+            contentType: 'application/JSON',
             url: '/api/register',
-            data: data,
+            data: JSON.stringify(data),
             success: function (response) {
+                console.log(response)
                 $('.errors').empty();
                 $('.alert-success').empty();
-                
-                if(JSON.parse(response).hasOwnProperty('success')){
+
+                if(JSON.parse(response).valid){
                     $('.register_errors').hide();
                     $('.alert-success').append("<strong>Success!</strong> Your account has been created.");
                     $(".alert-success").fadeTo(5000, 5000).slideUp(500, function(){
@@ -32,10 +44,15 @@ window.onload = function(){
                          });
                 } else {
                     $.each(JSON.parse(response), function(key, value) {
-                        $('.errors').append("<li>" + value + "</li>");
+                        if(value === true) {
+                            $('.errors').append("<li>" + errorlist[key] + "</li>");
+                        }
+                        $('.register_errors').show();
                     });
-                    $('.register_errors').show();
                 }
+                },
+            error: function(response) {
+                console.log(response);
             }
         });
     });
@@ -65,5 +82,4 @@ window.onload = function(){
             }
         });
     });
-
 };

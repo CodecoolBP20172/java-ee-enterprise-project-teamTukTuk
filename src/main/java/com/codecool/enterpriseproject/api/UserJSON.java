@@ -58,4 +58,51 @@ public class UserJSON {
         values.add(this.preference);
         return values;
     }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public boolean containsEmptyFields() {
+
+        for (String field: getValues()
+             ) {
+            System.out.println(field);
+            if (field == null || field.equals("")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPasswordAgain(String passwordAgain) {
+        this.passwordAgain = passwordAgain;
+    }
+
+    public void setPreference(String preference) {
+        this.preference = preference;
+    }
+
+
 }
