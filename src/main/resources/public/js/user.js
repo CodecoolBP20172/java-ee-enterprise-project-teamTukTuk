@@ -67,9 +67,10 @@ window.onload = function(){
         $.ajax({
             type: 'POST',
             url: '/api/login',
-            data: data,
+            contentType: 'application/JSON',
+            data: JSON.stringify(data),
             success: function (response) {
-                if(response === "success"){
+                if(JSON.parse(response)["valid"] === true){
                     $('#login').modal('hide');
                 } else {
                     $('.login_error').show();
@@ -79,6 +80,7 @@ window.onload = function(){
                 $('.login_error').empty();
                 $('.login_error').append("<p>Sorry :( Could not connect to the server.</p>");
                 $('.login_error').show();
+                console.log(response);
             }
         });
     });

@@ -28,37 +28,39 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
-    public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
-        if (loginWithValidate(email, password).equals("success")) {
-            return "redirect:/dashboard";
+    @PostMapping(value = "/api/login")
+    public String login(@RequestBody LoginJSON loginData) {
+        if (loginWithValidate(loginData.getEmail(), loginData.getPassword()).equals("success")) {
+            loginData.setValid(true);
+
+            //TODO SESSION HANDLING GOES HERE
         }
-        return "redirect:/index";
+        return JsonUtil.toJson(loginData);
     }
 
     @PostMapping(value = "/api/register")
-    public String handleRegisterInput(@RequestBody UserJSON json) {
+    public String handleRegisterInput(@RequestBody UserJSON registerData) {
 
-        for (String item: json.getValues()
+        for (String item: registerData.getValues()
              ) {
             System.out.println(item);
         }
 
         logger.info("validation started...");
-        ErrorJSON result = validateRegister(json);
+        ErrorJSON result = validateRegister(registerData);
 
         if (result.isValid()) {
 
-            String hashedPassword = hashpw(json.getPassword(), gensalt());
+            String hashedPassword = hashpw(registerData.getPassword(), gensalt());
             User user = new User(
-                    json.getFirstName().trim(),
-                    json.getLastName().trim(),
-                    json.getAge(),
+                    registerData.getFirstName().trim(),
+                    registerData.getLastName().trim(),
+                    registerData.getAge(),
                     hashedPassword,
-                    json.getEmail(),
+                    registerData.getEmail(),
                     false,
-                    json.getGender(),
-                    json.getPreference()
+                    registerData.getGender(),
+                    registerData.getPreference()
             );
             userService.addUser(user);
             logger.info("form data is valid.");
@@ -67,7 +69,7 @@ public class AuthController {
         return JsonUtil.toJson(result);
     }
 
-    protected ErrorJSON validateRegister(UserJSON json) {
+    private ErrorJSON validateRegister(UserJSON json) {
 
          ErrorJSON errors = new ErrorJSON();
          boolean isvalid = true;
