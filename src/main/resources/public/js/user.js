@@ -9,6 +9,7 @@ window.onload = function(){
         "tooShortName": "Your name is too short!",
         "invalidName": "Your name contains invalid characters!",
         "emailExists": "Your email already exists!",
+        "emailInvalid": "That does not look like a valid email!",
         "couldNotParseAge": "Age could not be parsed!",
         "ageOutsideInterval":"Age is outside the interval!"}
     

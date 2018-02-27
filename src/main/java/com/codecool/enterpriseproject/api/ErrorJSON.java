@@ -7,6 +7,7 @@ public class ErrorJSON {
     private boolean tooShortName;
     private boolean invalidName;
     private boolean emailExists;
+    private boolean emailInvalid;
     private boolean couldNotParseAge;
     private boolean ageOutsideInterval;
     private boolean valid;
@@ -73,5 +74,13 @@ public class ErrorJSON {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isEmailInvalid() {
+        return emailInvalid;
+    }
+
+    public void setEmailInvalid(boolean emailInvalid) {
+        this.emailInvalid = emailInvalid;
     }
 }

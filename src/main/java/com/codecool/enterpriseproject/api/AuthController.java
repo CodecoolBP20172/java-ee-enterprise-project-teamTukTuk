@@ -103,6 +103,12 @@ public class AuthController {
             isvalid = false;
         }
 
+        logger.info("> checking email format");
+        if (!email.contains("@")) {
+            errors.setEmailInvalid(true);
+            isvalid = false;
+        }
+
         User potentialUser = userService.findUserByEmail(email);
         logger.info("> checking if email exists");
         if (potentialUser != null) {
@@ -129,7 +135,7 @@ public class AuthController {
         return errors;
     }
 
-    public String loginWithValidate( String email, String password) {
+    private String loginWithValidate( String email, String password) {
         User user = userService.findUserByEmail(email);
         if (user != null && BCrypt.checkpw(password, user.getPassWord())) {
             session.setAttribute("id", String.valueOf(user.getId()));
