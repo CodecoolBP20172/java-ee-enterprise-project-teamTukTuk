@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findUsersByAgeBetweenAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(int minAge, int maxAge, Gender gender, Gender partnerGender, Personality personality);
+    List<User> findUsersByAgeBetweenAndPersonalityTypeAndGenderAndPartnerGenderAndInConversationFalse(int min, int max, Personality personality, Gender gender, Gender partnerGender);
 
     User findUserByEmail(String email);
 

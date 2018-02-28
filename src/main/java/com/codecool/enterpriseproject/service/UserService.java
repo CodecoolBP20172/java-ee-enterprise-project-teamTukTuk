@@ -47,14 +47,16 @@ public class UserService {
     }
 
     public User findMatch(User user) {
-        //find a match with max 5(?) years difference
+        //find a match with max 5 years difference
         int maxDifference = 5;
         int minPartnerAge = user.getAge() - maxDifference;
         int maxPartnerAge = user.getAge() + maxDifference;
         Gender gender = user.getGender();
         Gender partnerGender = user.getPartnerGender();
         Personality optPartnerPersType = user.getOptPartnerPersType();
-        List<User> matches = userRepository.findUsersByAgeBetweenAndGenderAndPartnerGenderAndPersonalityTypeAndInConversationFalse(minPartnerAge, maxPartnerAge, gender, partnerGender, optPartnerPersType);
+
+        List<User> matches = userRepository.findUsersByAgeBetweenAndPersonalityTypeAndGenderAndPartnerGenderAndInConversationFalse(minPartnerAge, maxPartnerAge, optPartnerPersType, partnerGender, gender);
+
         List<ChatBox> chatBoxes = chatBoxService.findPastChatBoxes(user);
         return matchFinderUtil.findTheOne(matches, chatBoxes);
     }
