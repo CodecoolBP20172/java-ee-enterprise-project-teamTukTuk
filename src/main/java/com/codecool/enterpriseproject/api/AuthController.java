@@ -34,6 +34,9 @@ public class AuthController {
             loginData.setValid(true);
 
             //TODO SESSION HANDLING GOES HERE
+            Long id = userService.findUserByEmail(loginData.getEmail()).getId();
+            session.setAttribute("email", loginData.getEmail());
+            session.setAttribute("id", String.valueOf(id));
         }
         return JsonUtil.toJson(loginData);
     }
@@ -63,6 +66,9 @@ public class AuthController {
                     registerData.getPreference()
             );
             userService.addUser(user);
+            Long id = userService.findUserByEmail(registerData.getEmail()).getId();
+            session.setAttribute("id", String.valueOf(id));
+            session.setAttribute("email", registerData.getEmail());
             logger.info("form data is valid.");
         }
 

@@ -6,6 +6,7 @@ import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.service.ChatBoxService;
 import com.codecool.enterpriseproject.service.MessageService;
 import com.codecool.enterpriseproject.service.UserService;
+import com.codecool.enterpriseproject.session.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +30,12 @@ public class ChatController {
     @Autowired
     MessageService messageService;
 
+    @Autowired
+    UserSession session;
+
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-    public String renderChatPage(HttpSession session, Model model) {
-        User user = userService.findUserByEmail(String.valueOf(session.getAttribute("email")));
+    public String renderChatPage(Model model) {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
         ChatBox chatBox = chatBoxService.getChatBox(user);
         List<Message> messages = messageService.getMessages(chatBox);
         model.addAttribute("messages", messages);
@@ -41,8 +45,8 @@ public class ChatController {
     }
 
     @RequestMapping(value = "/post_message", method = RequestMethod.POST)
-    public String writeMessageIntoDB(@RequestParam("message") String text, HttpSession session) {
-        User user = userService.findUserByEmail(String.valueOf(session.getAttribute("email")));
+    public String writeMessageIntoDB(@RequestParam("message") String text) {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
         ChatBox chatBox = chatBoxService.getChatBox(user);
         Message message = new Message(chatBox, new Date(), text, user);
         messageService.addMessage(message);
@@ -57,6 +61,6 @@ public class ChatController {
         userService.setInConversation(user, false);
         userService.setInConversation(anotherUser, false);
         chatBoxService.deactivateChatBox(chatBox);
-        return "redirect:/dashboard";
+        return "redirect:/user/page";
     }
 }

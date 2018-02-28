@@ -83,12 +83,12 @@ public class UserController {
         logger.info("personality type of the user: " + personalityType);
         //TODO popup thx for filling the form
         //redirect to front page
-        return "dashboard";
+        return "redirect:/dashboard";
     }
 
     @RequestMapping(value = "/user/page", method = RequestMethod.GET)
-    public String renderUserPage(HttpSession session, Model model) {
-        User user = userService.findUserByEmail(String.valueOf(session.getAttribute("email")));
+    public String renderUserPage(Model model) {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
         User optUser = userService.findMatch(user);
         if (optUser != null) {
             ChatBox chatBox = new ChatBox(user, optUser);
@@ -98,6 +98,6 @@ public class UserController {
             model.addAttribute("match", optUser);
         }
         model.addAttribute("user", user);
-        return "demo";
+        return "redirect:/dashboard";
     }
 }
