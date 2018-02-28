@@ -38,8 +38,10 @@ public class ChatController {
         User user = userService.findUserByEmail(session.getAttribute("email"));
         ChatBox chatBox = chatBoxService.getChatBox(user);
         List<Message> messages = messageService.getMessages(chatBox);
+        boolean inConversation = user.isInConversation();
         model.addAttribute("messages", messages);
         model.addAttribute("user", user);
+        model.addAttribute("inConversation", inConversation);
         System.out.println(messages);
         return "dashboard";
     }

@@ -20,21 +20,28 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
 </head>
 <body>
-    <div th:replace="navbar :: user_section"></div>
-    <div th:each="message: ${messages}">
-        <p th:text="${message.user.firstName} + ': ' + ${message.message}" ></p>
+    <div th:if="${inConversation} == false">
+        <div th:replace="navbar :: user_section"></div>
+        <h1>Sorry, no match right now.</h1>
+        <h2>Please come back later! :(</h2>
     </div>
-    <div>
-        <form method="POST" action="post_message">
-            <textarea name="message"/>
-            <button type="submit" >Send</button>
-        </form>
-    </div>
-    <div>
-        <form action="/doyoulikeme" method="post">
-            <input type="hidden" name="userId" th:value="${user.id}" />
-            <button class="btn btn-danger" type="submit">get another bitch</button>
-        </form>
+    <div th:if="${inConversation}">
+        <div th:replace="navbar :: user_section"></div>
+        <div th:each="message: ${messages}">
+            <p th:text="${message.user.firstName} + ': ' + ${message.message}" ></p>
+        </div>
+        <div>
+            <form method="POST" action="post_message">
+                <textarea name="message"/>
+                <button type="submit" >Send</button>
+            </form>
+        </div>
+        <div>
+            <form action="/doyoulikeme" method="post">
+                <input type="hidden" name="userId" th:value="${user.id}" />
+                <button class="btn btn-danger" type="submit">get another bitch</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
