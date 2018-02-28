@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
 </head>
 <body>
-    <div th:if="${inConversation} == false">
+    <div th:if="${!inConversation}">
         <div th:replace="navbar :: user_section"></div>
         <h1>Sorry, no match right now.</h1>
         <h2>Please come back later! :(</h2>
@@ -39,7 +39,7 @@
         <div>
             <form action="/doyoulikeme" method="post">
                 <input type="hidden" name="userId" th:value="${user.id}" />
-                <button class="btn btn-danger" type="submit">get another bitch</button>
+                <button class="btn btn-danger" type="submit">get new partner</button>
             </form>
         </div>
     </div>

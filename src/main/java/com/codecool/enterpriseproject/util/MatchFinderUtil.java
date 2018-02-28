@@ -18,8 +18,6 @@ public class MatchFinderUtil {
         //and then to a List of Users like this
         List<User> usersMet = findUsersMet(chatBoxes);
 
-        System.out.println("usersmet: " + usersMet);
-
         if (matches.isEmpty()) {
             return null;
         }
@@ -29,7 +27,6 @@ public class MatchFinderUtil {
             System.out.println("matches size: " + matches.size());
             for (User match : matches) {
                 lengthChecker += 1;
-                System.out.println("lenghtCh: " + lengthChecker);
                 if (!usersMet.contains(match)) {
                     theOne = match;
                     matchFound = true;

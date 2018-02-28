@@ -72,4 +72,14 @@ public class ChatBox {
     public void deactivateChatBox() {
         this.active = false;
     }
+
+    @Override
+    public String toString() {
+        return "ChatBox{" +
+                "threadId=" + threadId +
+                ", firstUser=" + firstUser +
+                ", secondUser=" + secondUser +
+                ", active=" + active +
+                '}';
+    }
 }

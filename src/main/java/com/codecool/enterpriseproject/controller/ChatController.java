@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +37,14 @@ public class ChatController {
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String renderChatPage(Model model) {
         User user = userService.findUserByEmail(session.getAttribute("email"));
-        ChatBox chatBox = chatBoxService.getChatBox(user);
-        List<Message> messages = messageService.getMessages(chatBox);
+        List<ChatBox> chatBox = chatBoxService.getChatBox(user);
         boolean inConversation = user.isInConversation();
+        List<Message> messages = new ArrayList<>();
+        if (chatBox.size() == 0) {
+            inConversation = false;
+        }else {
+            messages = messageService.getMessages(chatBox.get(0));
+        }
         model.addAttribute("messages", messages);
         model.addAttribute("user", user);
         model.addAttribute("inConversation", inConversation);
@@ -49,7 +55,9 @@ public class ChatController {
     @RequestMapping(value = "/post_message", method = RequestMethod.POST)
     public String writeMessageIntoDB(@RequestParam("message") String text) {
         User user = userService.findUserByEmail(session.getAttribute("email"));
-        ChatBox chatBox = chatBoxService.getChatBox(user);
+        List<ChatBox> chatBoxes = chatBoxService.getChatBox(user);
+        ChatBox chatBox = chatBoxService.getChatBoxById(chatBoxes.get(0).getId());
+        System.out.println("chetboksz: " + chatBox.toString());
         Message message = new Message(chatBox, new Date(), text, user);
         messageService.addMessage(message);
         return "redirect:/dashboard";
@@ -58,11 +66,11 @@ public class ChatController {
     @RequestMapping(value = "/doyoulikeme", method = RequestMethod.POST)
     public String getNewPartner(@RequestParam("userId") Long userId) {
         User user = userService.findUserById(userId);
-        ChatBox chatBox = chatBoxService.getChatBox(user);
-        User anotherUser = chatBox.getSecondUser();
+        List<ChatBox> chatBox = chatBoxService.getChatBox(user);
+        User anotherUser = chatBox.get(0).getSecondUser();
         userService.setInConversation(user, false);
         userService.setInConversation(anotherUser, false);
-        chatBoxService.deactivateChatBox(chatBox);
+        chatBoxService.deactivateChatBox(chatBox.get(0));
         return "redirect:/user/page";
     }
 }

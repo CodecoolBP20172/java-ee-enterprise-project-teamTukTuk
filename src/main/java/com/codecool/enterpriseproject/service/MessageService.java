@@ -19,6 +19,6 @@ public class MessageService {
     }
 
     public List<Message> getMessages(ChatBox chatBox) {
-        return messageRepository.getMessagesByChatBox(chatBox);
+        return messageRepository.findMessagesByChatBox_ActiveAndChatBox(true, chatBox);
     }
 }
