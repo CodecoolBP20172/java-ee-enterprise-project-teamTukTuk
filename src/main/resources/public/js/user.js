@@ -39,10 +39,7 @@ window.onload = function(){
 
                 if(JSON.parse(response)["valid"] === true){
                     $('.register_errors').hide();
-                    $('.alert-success').append("<strong>Success!</strong> Your account has been created.");
-                    $(".alert-success").fadeTo(5000, 5000).slideUp(500, function(){
-                        $(".alert-success").slideUp(500);
-                         });
+                    $(location).attr('href', window.location.href + "/personality");
                 } else {
                     $.each(JSON.parse(response), function(key, value) {
                         if(value === true) {

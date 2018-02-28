@@ -49,7 +49,7 @@ public class UserController {
         return mostFrequentValue;
     }
 
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String renderRegisterPage() {
         return "index";
     }
