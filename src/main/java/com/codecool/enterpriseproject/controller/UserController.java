@@ -83,13 +83,16 @@ public class UserController {
         logger.info("personality type of the user: " + personalityType);
         //TODO popup thx for filling the form
         //redirect to front page
-        return "redirect:/dashboard";
+        return "redirect:/user/page";
     }
 
     @RequestMapping(value = "/user/page", method = RequestMethod.GET)
     public String renderUserPage(Model model) {
         User user = userService.findUserByEmail(session.getAttribute("email"));
         User optUser = userService.findMatch(user);
+
+        System.out.println("opt user: " + optUser + ", user: " + user);
+
         if (optUser != null) {
             ChatBox chatBox = new ChatBox(user, optUser);
             chatBoxService.addChatBox(chatBox);
