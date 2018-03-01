@@ -77,7 +77,7 @@ public class User {
         this.partnerGender = setGender(partnerGender);
     }
 
-    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender) {
+    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender, boolean isInConversation) {
         //to create test users in ChatController
 
         this.firstName = firstName;
@@ -87,6 +87,7 @@ public class User {
         this.passWord = passWord;
         this.gender = setGender(gender);
         this.partnerGender = setGender(partnerGender);
+        setInConversation(isInConversation);
         setPersonalityType(personality);
         setOptPartnerPersType(personality);
     }

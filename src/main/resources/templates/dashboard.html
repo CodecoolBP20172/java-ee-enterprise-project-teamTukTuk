@@ -30,7 +30,7 @@
 
 </head>
 <body>
-    <div th:if="${!inConversation}">
+    <div th:if="${inConversation} == false">
         <div th:replace="navbar :: user_section"></div>
         <h1>Sorry, no match right now.</h1>
         <h2>Please come back later! :(</h2>
