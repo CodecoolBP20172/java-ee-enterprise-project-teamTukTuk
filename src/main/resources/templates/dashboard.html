@@ -35,19 +35,6 @@
         <h1>Sorry, no match right now.</h1>
         <h2>Please come back later! :(</h2>
     </div>
-    <div>
-        <form method="POST" action="post_message">
-            <textarea id="message" name="message"/>
-            <button id="messagesend" type="submit" >Send</button>
-        </form>
-    </div>
-    <div>
-        <form action="/doyoulikeme" method="post">
-            <input type="hidden" name="userId" th:value="${user.id}" />
-            <button class="btn btn-danger socket" type="submit">get another bitch</button>
-            <button class="btn" type="button" id="start">start</button>
-        </form>
-    </div>
     <div th:if="${inConversation}">
         <div th:replace="navbar :: user_section"></div>
         <div class="container">
@@ -81,7 +68,7 @@
                             <div>
                                 <form action="/doyoulikeme" method="post">
                                     <input type="hidden" name="userId" th:value="${user.id}" />
-                                    <button class="btn btn-danger" type="submit">find a new partner</button>
+                                    <button id="message" class="btn btn-danger" type="submit">find a new partner</button>
                                 </form>
                             </div>
                         </div>

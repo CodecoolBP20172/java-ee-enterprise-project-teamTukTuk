@@ -1,39 +1,31 @@
-window.onload = function() {
 
-    function connect() {
-        let socket = new SockJS("/dashboard");
-        let stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('dashboard/' + getData(), function() {
-                console.log("You are succesfully connected to chatbox: " + getData())
+let socket = new SockJS("/dashboard");
+let stompClient = Stomp.over(socket);
+
+function connect() {
+    $.ajax({
+        type: "GET",
+        url: "/app/current_chatbox",
+        success: function (response) {
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('dashboard/' + response, function() {
+                    console.log("You are succesfully connected to chatbox: " + getData())
+                });
             });
-        });
-    }
-
-
-    function getData() {
-        let chatBoxId = null;
-
-        $.ajax({
-            type: "GET",
-            url: "/app/current_chatbox",
-            success: function (response) {
-                chatBoxId = response["id"];
-            },
-            error: function (response) {
-                console.log(response);
-            }
-        });
-        return chatBoxId;
-    }
-
-    $("#start").click(function() {
-        connect();
+        },
+        error: function (response) {
+            console.log(response);
+        }
     });
+}
 
-    function sendMessage() {
-        stompClient.send("/app/message", {}, JSON.stringify({'message': $("#message").val()}));
-    }
+function sendMessage() {
+    stompClient.send("/message", {}, JSON.stringify({'message': $("#message").val()}));
+}
 
+
+window.onload = function () {
+    connect();
+    $("#message").click(sendMessage());
 };
