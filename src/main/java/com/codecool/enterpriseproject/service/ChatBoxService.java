@@ -24,7 +24,7 @@ public class ChatBoxService{
     }
 
     public List<ChatBox> getChatBox(User user) {
-        return chatBoxRepository.findChatBoxByFirstUserOrSecondUserAndActive(user, user, true);
+        return chatBoxRepository.findChatBoxesByFirstUserAndActiveTrueOrSecondUserAndActiveTrue(user, user);
     }
 
     public ChatBox getChatBoxById(long id) {

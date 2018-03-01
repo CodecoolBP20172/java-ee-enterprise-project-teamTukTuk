@@ -37,7 +37,11 @@ public class ChatController {
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String renderChatPage(Model model) {
         User user = userService.findUserByEmail(session.getAttribute("email"));
+        System.out.println("email from session: " + session.getAttribute("email"));
+
+        //nem jó
         List<ChatBox> chatBox = chatBoxService.getChatBox(user);
+
         boolean inConversation = user.isInConversation();
         List<Message> messages = new ArrayList<>();
         if (chatBox.size() == 0) {
@@ -65,7 +69,7 @@ public class ChatController {
     public String writeMessageIntoDB(@RequestParam("message") String text) {
         User user = userService.findUserByEmail(session.getAttribute("email"));
         List<ChatBox> chatBoxes = chatBoxService.getChatBox(user);
-        ChatBox chatBox = chatBoxService.getChatBoxById(chatBoxes.get(0).getId());
+        ChatBox chatBox = chatBoxes.get(0);
         System.out.println("chetboksz: " + chatBox.toString());
         Message message = new Message(chatBox, new Date(), text, user);
         messageService.addMessage(message);
@@ -80,6 +84,6 @@ public class ChatController {
         userService.setInConversation(user, false);
         userService.setInConversation(anotherUser, false);
         chatBoxService.deactivateChatBox(chatBox.get(0));
-        return "redirect:/user/page";
+        return "redirect:user/page";
     }
 }
