@@ -61,15 +61,13 @@
                         </div>
                         <div class="panel-footer">
                             <div class="input-group">
-                                <form method="POST" action="post_message">
-                                    <textarea class="form-control" rows="2" name="message"/>
-                                    <button class="btn btn-success pull-right" type="submit" >Send</button>
-                                </form>
+                                <textarea class="form-control message" rows="2" name="message"/>
+                                <button id="message" class="btn btn-success pull-right" type="submit" >Send</button>
                             </div>
                             <div>
                                 <form action="/doyoulikeme" method="post">
-                                    <input type="hidden" name="userId" th:value="${user.id}" />
-                                    <button id="message" class="btn btn-danger" type="submit">find a new partner</button>
+                                    <input type="hidden" class="userId" name="userId" th:value="${user.id}" />
+                                    <button class="btn btn-danger" type="submit">find a new partner</button>
                                 </form>
                             </div>
                         </div>
