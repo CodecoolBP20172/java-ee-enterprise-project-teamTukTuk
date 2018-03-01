@@ -1,16 +1,21 @@
 package com.codecool.enterpriseproject.api;
 
 import com.codecool.enterpriseproject.model.ChatBox;
+import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.model.User;
 import com.codecool.enterpriseproject.service.ChatBoxService;
+import com.codecool.enterpriseproject.service.MessageService;
 import com.codecool.enterpriseproject.service.UserService;
 import com.codecool.enterpriseproject.session.UserSession;
-import com.codecool.enterpriseproject.util.JsonUtil;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 import static com.codecool.enterpriseproject.util.JsonUtil.toJson;
 import static org.mindrot.jbcrypt.BCrypt.gensalt;
@@ -29,6 +34,9 @@ public class AuthController {
 
     @Autowired
     ChatBoxService chatBoxService;
+
+    @Autowired
+    MessageService messageService;
 
     @PostMapping(value = "/api/login")
     public String login(@RequestBody LoginJSON loginData) {
@@ -158,14 +166,29 @@ public class AuthController {
     public String getCurrentChatBoxId() {
         User user = userService.findUserByEmail(session.getAttribute("email"));
         System.out.println("user " + user.getId());
-
         ChatBox chatBox = chatBoxService.getChatBox(user).get(0);
-
-
         String id = String.valueOf(chatBox.getId());
         System.out.println("chatboxid" +  id);
-        return toJson(id);
+        return id;
     }
 
+    @MessageMapping("/dashboard/{currentId}")
+    @SendTo("/dashboard/{currentId}/process")
+    public String messageForwarder(MessageJSON message){
+
+        String messageToForward = message.getMessage();
+        User user = userService.findUserById(Long.valueOf(message.getUserId()));
+//        destid = String.valueOf(chatBoxService.getChatBox(user).get(0).getId());
+//        System.out.println(destid);
+        messageService.addMessage(new Message(chatBoxService.getChatBox(user).get(0), new Date(), messageToForward, user));
+        return messageToForward;
+    }
+
+//    @RequestMapping(value = "/dashboard/{currentId}/process", method = RequestMethod.GET)
+//    public String messageSaver(Message message){
+//        System.out.println(message);
+//        messageService.addMessage(message);
+//        return toJson(message);
+//    }
 
 }
