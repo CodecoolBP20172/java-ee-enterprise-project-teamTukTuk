@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface ChatBoxRepository extends JpaRepository<ChatBox, Long> {
 
-    List<ChatBox> findChatBoxByFirstUserAndActive(User user, Boolean bool);
+    List<ChatBox> findChatBoxByFirstUserOrSecondUserAndActive(User user, User sUser, Boolean bool);
     List<ChatBox> getChatBoxesByFirstUser(User user);
+
 
 }
