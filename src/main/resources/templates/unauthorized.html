@@ -3,8 +3,8 @@
     <head>
         <title>Dani's dating site</title>
         <!-- Latest compiled and minified Jquery -->
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-                integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+                integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>-->
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
               integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
@@ -15,18 +15,17 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
                 crossorigin="anonymous"></script>
-        <script defer="defer" src="/js/modal.js"></script>
-        <script defer="defer" src="/js/user.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/main.css" />
     </head>
     <body>
         <div th:replace="navbar :: user_section"></div>
         <div id="mainContainer">
             <div class="row">
-                <div id="register_box" class="col-sm-4">
-                    <div th:replace="register :: register"></div>
+                <div id="error_box" class="col-sm-12">
+                    <div class="alert alert-danger register_errors">
+                        <strong>Ooops! Seems like you shouldn't be on this page!</strong>
+                    </div>
                 </div>
-                <div class="col-sm-8">...stuff can go here...</div>
             </div>
         </div>
     </body>
