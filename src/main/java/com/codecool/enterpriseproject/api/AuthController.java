@@ -159,12 +159,10 @@ public class AuthController {
         User user = userService.findUserByEmail(session.getAttribute("email"));
         System.out.println("user " + user.getId());
 
-//        //ez a szar
-//        ChatBox chatBox = chatBoxService.getChatBox(user);
-//        //
+        ChatBox chatBox = chatBoxService.getChatBox(user).get(0);
 
-        System.out.println(chatBox.getId());
-        String id = String.valueOf(chatBoxService.getChatBox(user).getId());
+
+        String id = String.valueOf(chatBox.getId());
         System.out.println("chatboxid" +  id);
         return toJson(id);
     }
