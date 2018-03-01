@@ -1,9 +1,8 @@
 window.onload = function(){
     $('.register_errors').hide();
     $('.login_error').hide();
-    $('.alert-success').hide();
 
-    var errorlist = {
+    const errorlist = {
         "allFieldsRequired": "All fields are required!",
         "passwordMismatch": "Passwords do not match!",
         "tooShortName": "Your name is too short!",
@@ -35,7 +34,7 @@ window.onload = function(){
             success: function (response) {
                 console.log(response)
                 $('.errors').empty();
-                $('.alert-success').empty();
+                $('#statusMessages').empty();
 
                 if(JSON.parse(response)["valid"] === true){
                     $('.register_errors').hide();
@@ -70,6 +69,7 @@ window.onload = function(){
             success: function (response) {
                 if(JSON.parse(response)["valid"] === true){
                     $('#login').modal('hide');
+                    $(location).attr('href', window.location.href + "/user/page");
                 } else {
                     $('.login_error').show();
                 }
