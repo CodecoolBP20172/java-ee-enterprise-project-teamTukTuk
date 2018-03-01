@@ -45,9 +45,16 @@ public class ChatController {
         }else {
             messages = messageService.getMessages(chatBox.get(0));
         }
+        User partner;
+        if (chatBox.get(0).getFirstUser().equals(user)) {
+            partner = chatBox.get(0).getSecondUser();
+        } else {
+            partner = chatBox.get(0).getFirstUser();
+        }
         model.addAttribute("messages", messages);
         model.addAttribute("user", user);
         model.addAttribute("inConversation", inConversation);
+        model.addAttribute("partner", partner);
         System.out.println(messages);
         return "dashboard";
     }

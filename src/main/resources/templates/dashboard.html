@@ -37,9 +37,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <div class="panel panel-primary">
+                    <div class="panel panel-success">
                         <div class="panel-heading">
-                            <span class="glyphicon glyphicon-comment"></span> Chat
+                            <h3 th:text="${' In conversation with ' + partner.getFirstName()}"></h3>
                         </div>
                         <div class="panel-body">
                             <ul class="chat">
@@ -47,7 +47,8 @@
                                 <li class="clearfix" th:each="message: ${messages}">
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font" th:text="${user.getFirstName()}"></strong> <small class="pull-right text-muted">
+                                            <strong class="primary-font" th:text="${message.user.getFirstName()}"></strong>
+                                            <small class="pull-right text-muted">
                                             <span class="glyphicon glyphicon-time" th:text="${#dates.format(message.date, ' HH:mm (dd-MM-yyyy)')}"></span></small>
                                         </div>
                                         <p th:text="${message.message}"></p>
