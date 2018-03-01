@@ -1,19 +1,18 @@
 package com.codecool.enterpriseproject.api;
 
+import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.User;
+import com.codecool.enterpriseproject.service.ChatBoxService;
 import com.codecool.enterpriseproject.service.UserService;
 import com.codecool.enterpriseproject.session.UserSession;
 import com.codecool.enterpriseproject.util.JsonUtil;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import static com.codecool.enterpriseproject.util.JsonUtil.toJson;
 import static org.mindrot.jbcrypt.BCrypt.gensalt;
 import static org.mindrot.jbcrypt.BCrypt.hashpw;
 
@@ -28,6 +27,9 @@ public class AuthController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ChatBoxService chatBoxService;
+
     @PostMapping(value = "/api/login")
     public String login(@RequestBody LoginJSON loginData) {
         if (loginWithValidate(loginData.getEmail(), loginData.getPassword()).equals("success")) {
@@ -38,7 +40,7 @@ public class AuthController {
             session.setAttribute("email", loginData.getEmail());
             session.setAttribute("id", String.valueOf(id));
         }
-        return JsonUtil.toJson(loginData);
+        return toJson(loginData);
     }
 
     @PostMapping(value = "/api/register")
@@ -72,7 +74,7 @@ public class AuthController {
             logger.info("form data is valid.");
         }
 
-        return JsonUtil.toJson(result);
+        return toJson(result);
     }
 
     private ErrorJSON validateRegister(UserJSON json) {
@@ -151,5 +153,21 @@ public class AuthController {
         }
         return "";
     }
+
+    @RequestMapping(value = "/app/current_chatbox", method = RequestMethod.GET)
+    public String getCurrentChatBoxId() {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
+        System.out.println("user " + user.getId());
+
+//        //ez a szar
+//        ChatBox chatBox = chatBoxService.getChatBox(user);
+//        //
+
+        System.out.println(chatBox.getId());
+        String id = String.valueOf(chatBoxService.getChatBox(user).getId());
+        System.out.println("chatboxid" +  id);
+        return toJson(id);
+    }
+
 
 }

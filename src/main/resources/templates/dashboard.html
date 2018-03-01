@@ -17,6 +17,9 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script defer="defer" src="/js/user.js"></script>
+    <script defer="defer" src="/js/webSocket.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
 </head>
 <body>
@@ -26,14 +29,15 @@
     </div>
     <div>
         <form method="POST" action="post_message">
-            <textarea name="message"/>
-            <button type="submit" >Send</button>
+            <textarea id="message" name="message"/>
+            <button id="messagesend" type="submit" >Send</button>
         </form>
     </div>
     <div>
         <form action="/doyoulikeme" method="post">
             <input type="hidden" name="userId" th:value="${user.id}" />
-            <button class="btn btn-danger" type="submit">get another bitch</button>
+            <button class="btn btn-danger socket" type="submit">get another bitch</button>
+            <button class="btn" type="button" id="start">start</button>
         </form>
     </div>
 </body>

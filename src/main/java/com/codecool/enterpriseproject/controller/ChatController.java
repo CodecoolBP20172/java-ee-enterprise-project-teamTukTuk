@@ -8,8 +8,11 @@ import com.codecool.enterpriseproject.service.MessageService;
 import com.codecool.enterpriseproject.service.UserService;
 import com.codecool.enterpriseproject.session.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,4 +66,6 @@ public class ChatController {
         chatBoxService.deactivateChatBox(chatBox);
         return "redirect:/user/page";
     }
+
+
 }
