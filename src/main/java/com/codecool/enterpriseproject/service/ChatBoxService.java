@@ -23,9 +23,8 @@ public class ChatBoxService{
         chatBoxRepository.save(chatBox);
     }
 
-    public ChatBox getChatBox(User user) {
-        Long id = user.getId();
-        return chatBoxRepository.getChatBoxByFirstUserOrSecondUserIdAndActiveTrue(user, id);
+    public List<ChatBox> getChatBox(User user) {
+        return chatBoxRepository.findChatBoxByFirstUserAndActive(user,true);
     }
 
     public ChatBox getChatBoxById(long id) {

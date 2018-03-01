@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Personality form</title>
+    <title>Dashboard</title>
     <!-- Latest compiled and minified Jquery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -21,11 +21,19 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
+
+    <!-- for the new chat window -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="/css/chat.css" />
+
 </head>
 <body>
-    <div th:replace="navbar :: user_section"></div>
-    <div th:each="message: ${messages}">
-        <p th:text="${message.user.firstName} + ': ' + ${message.message}" ></p>
+    <div th:if="${!inConversation}">
+        <div th:replace="navbar :: user_section"></div>
+        <h1>Sorry, no match right now.</h1>
+        <h2>Please come back later! :(</h2>
     </div>
     <div>
         <form method="POST" action="post_message">
@@ -39,6 +47,48 @@
             <button class="btn btn-danger socket" type="submit">get another bitch</button>
             <button class="btn" type="button" id="start">start</button>
         </form>
+    </div>
+    <div th:if="${inConversation}">
+        <div th:replace="navbar :: user_section"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-comment"></span> Chat
+                        </div>
+                        <div class="panel-body">
+                            <ul class="chat">
+
+                                <li class="clearfix" th:each="message: ${messages}">
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font" th:text="${user.getFirstName()}"></strong> <small class="pull-right text-muted">
+                                            <span class="glyphicon glyphicon-time" th:text="${#dates.format(message.date, ' HH:mm (dd-MM-yyyy)')}"></span></small>
+                                        </div>
+                                        <p th:text="${message.message}"></p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <form method="POST" action="post_message">
+                                    <textarea class="form-control" rows="2" name="message"/>
+                                    <button class="btn btn-success pull-right" type="submit" >Send</button>
+                                </form>
+                            </div>
+                            <div>
+                                <form action="/doyoulikeme" method="post">
+                                    <input type="hidden" name="userId" th:value="${user.id}" />
+                                    <button class="btn btn-danger" type="submit">find a new partner</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

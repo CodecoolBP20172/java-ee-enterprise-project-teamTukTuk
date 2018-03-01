@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long>{
 
-    List<Message> getMessagesByChatBox(ChatBox chatBox);
+    List<Message> findMessagesByChatBox_ActiveAndChatBox(Boolean bool, ChatBox chatBox);
 
 }
