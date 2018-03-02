@@ -1,64 +1,94 @@
 package com.codecool.enterpriseproject.controller;
 
-import com.codecool.enterpriseproject.dbhandler.ChatBoxDbHandler;
-import com.codecool.enterpriseproject.dbhandler.UserDbHandler;
 import com.codecool.enterpriseproject.model.ChatBox;
 import com.codecool.enterpriseproject.model.Message;
 import com.codecool.enterpriseproject.model.User;
-import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
+import com.codecool.enterpriseproject.service.ChatBoxService;
+import com.codecool.enterpriseproject.service.MessageService;
+import com.codecool.enterpriseproject.service.UserService;
+import com.codecool.enterpriseproject.session.UserSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static spark.Spark.redirect;
-
+@Controller
 public class ChatController {
 
-    
-    public static ModelAndView renderChatPage(Request request, Response response, UserDbHandler dbHandler, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf) {
-        Map params = new HashMap<>();
-        User user = dbHandler.findUserByEmail(emf, request.session().attribute("email"));
+    @Autowired
+    ChatBoxService chatBoxService;
 
-        ChatBox chatBox = chatBoxDbHandler.getChatBox( user, emf );
-        int threadId = chatBox.getId();
-        List<Message> messages = chatBoxDbHandler.getMessages( threadId, emf );
-        params.put("messages", messages);
-        params.put("user", user);
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    MessageService messageService;
+
+    @Autowired
+    UserSession session;
+
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public String renderChatPage(Model model) {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
+        System.out.println("email from session: " + session.getAttribute("email"));
+
+        //nem jó
+        List<ChatBox> chatBox = chatBoxService.getChatBox(user);
+
+        boolean inConversation = user.isInConversation();
+        List<Message> messages = new ArrayList<>();
+        if (chatBox.size() == 0) {
+            inConversation = false;
+        }else {
+            messages = messageService.getMessages(chatBox.get(0));
+        }
+        User partner;
+        if (!chatBox.isEmpty()) {
+            if (chatBox.get(0).getFirstUser().equals(user)) {
+                partner = chatBox.get(0).getSecondUser();
+            } else {
+                partner = chatBox.get(0).getFirstUser();
+            }
+            model.addAttribute("partner", partner);
+        }
+        model.addAttribute("messages", messages);
+        model.addAttribute("user", user);
+        model.addAttribute("inConversation", inConversation);
         System.out.println(messages);
-        return new ModelAndView( params, "/dashboard" );
+        return "dashboard";
     }
 
-    public static String writeMessageIntoDB(Request req, Response res, UserDbHandler UdbHandler, ChatBoxDbHandler dbHandler,EntityManagerFactory emf ) {
-        String text = req.queryParams("message");
-        User user = UdbHandler.findUserByEmail(emf, req.session().attribute("email"));
-        ChatBox chatBox = dbHandler.getChatBox(user, emf);
+    @RequestMapping(value = "/post_message", method = RequestMethod.POST)
+    public String writeMessageIntoDB(@RequestParam("message") String text) {
+        User user = userService.findUserByEmail(session.getAttribute("email"));
+        List<ChatBox> chatBoxes = chatBoxService.getChatBox(user);
+        ChatBox chatBox = chatBoxes.get(0);
+        System.out.println("chetboksz: " + chatBox.toString());
         Message message = new Message(chatBox, new Date(), text, user);
-        dbHandler.addNewMessage(message, emf);
-        res.redirect("/dashboard");
-        return "";
+        messageService.addMessage(message);
+        return "redirect:/dashboard";
     }
 
-    public static String getNewPartner(Request request, Response response, ChatBoxDbHandler chatBoxDbHandler, EntityManagerFactory emf, UserDbHandler dbHandler) {
-        System.out.println("bitch " + request.queryParams("bitchswitcher"));
-        int userId = Integer.parseInt(request.queryParams("userId"));
-        ChatBox chatBox = chatBoxDbHandler.getChatBox(dbHandler.getUserById(userId, emf), emf);
-        User user = dbHandler.getUserById(userId, emf);
-        User anotherUser = chatBox.getSecondUser();
-        System.out.println("egyiok juzer: " +user.getFirstName());
-        System.out.println("másik juzer: " +anotherUser.getFirstName());
-        dbHandler.setInConversation(user, false, emf);
-        dbHandler.setInConversation(anotherUser, false, emf);
-        chatBoxDbHandler.deactivateChatBox(emf, chatBox);
-        //User matchingNewPartner = dbHandler.findMatch(emf, user);
-        //ChatBox newChatBox = new ChatBox(user, matchingNewPartner);
-        //chatBoxDbHandler.addNewChatBox(emf, newChatBox);
-        response.redirect("/user/page");
-        return "";
+    @RequestMapping(value = "/doyoulikeme", method = RequestMethod.POST)
+    public String getNewPartner(@RequestParam("userId") Long userId) {
+        User user = userService.findUserById(userId);
+        List<ChatBox> chatBox = chatBoxService.getChatBox(user);
+        User anotherUser = chatBox.get(0).getSecondUser();
+        userService.setInConversation(user, false);
+        userService.setInConversation(anotherUser, false);
+        chatBoxService.deactivateChatBox(chatBox.get(0));
+        return "redirect:user/page";
     }
+
+
 }

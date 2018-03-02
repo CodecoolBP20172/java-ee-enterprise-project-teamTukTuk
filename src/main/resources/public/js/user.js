@@ -1,7 +1,17 @@
 window.onload = function(){
     $('.register_errors').hide();
     $('.login_error').hide();
-    $('.alert-success').hide();
+
+    const errorlist = {
+        "allFieldsRequired": "All fields are required!",
+        "passwordMismatch": "Passwords do not match!",
+        "tooShortName": "Your name is too short!",
+        "invalidName": "Your name contains invalid characters!",
+        "emailExists": "Your email already exists!",
+        "emailInvalid": "That does not look like a valid email!",
+        "couldNotParseAge": "Age could not be parsed!",
+        "ageOutsideInterval":"Age is outside the interval!"}
+    
 
     $('.register-button').click(function(event){
         event.preventDefault();
@@ -18,24 +28,28 @@ window.onload = function(){
 
         $.ajax({
             type: 'POST',
+            contentType: 'application/JSON',
             url: '/api/register',
-            data: data,
+            data: JSON.stringify(data),
             success: function (response) {
+                console.log(response)
                 $('.errors').empty();
-                $('.alert-success').empty();
-                
-                if(JSON.parse(response).hasOwnProperty('success')){
+                $('#statusMessages').empty();
+
+                if(JSON.parse(response)["valid"] === true){
                     $('.register_errors').hide();
-                    $('.alert-success').append("<strong>Success!</strong> Your account has been created.");
-                    $(".alert-success").fadeTo(5000, 5000).slideUp(500, function(){
-                        $(".alert-success").slideUp(500);
-                         });
+                    $(location).attr('href', window.location.href + "/personality");
                 } else {
                     $.each(JSON.parse(response), function(key, value) {
-                        $('.errors').append("<li>" + value + "</li>");
+                        if(value === true) {
+                            $('.errors').append("<li>" + errorlist[key] + "</li>");
+                        }
+                        $('.register_errors').show();
                     });
-                    $('.register_errors').show();
                 }
+                },
+            error: function(response) {
+                console.log(response);
             }
         });
     });
@@ -50,10 +64,12 @@ window.onload = function(){
         $.ajax({
             type: 'POST',
             url: '/api/login',
-            data: data,
+            contentType: 'application/JSON',
+            data: JSON.stringify(data),
             success: function (response) {
-                if(response === "success"){
+                if(JSON.parse(response)["valid"] === true){
                     $('#login').modal('hide');
+                    $(location).attr('href', window.location.href + "/user/page");
                 } else {
                     $('.login_error').show();
                 }
@@ -62,8 +78,8 @@ window.onload = function(){
                 $('.login_error').empty();
                 $('.login_error').append("<p>Sorry :( Could not connect to the server.</p>");
                 $('.login_error').show();
+                console.log(response);
             }
         });
     });
-
 };

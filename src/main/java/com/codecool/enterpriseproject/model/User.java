@@ -13,8 +13,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
     private int age;
 
@@ -22,12 +26,15 @@ public class User {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "partner_gender")
     private Gender partnerGender = Gender.male;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "personality_type")
     private Personality personalityType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "opt_partner_pers_type")
     private Personality optPartnerPersType;
     private String passWord;
     private String email;
@@ -70,7 +77,7 @@ public class User {
         this.partnerGender = setGender(partnerGender);
     }
 
-    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender) {
+    public User(String firstName, String lastName, String email, int age, String passWord, int personality, String gender, String partnerGender, boolean isInConversation) {
         //to create test users in ChatController
 
         this.firstName = firstName;
@@ -80,6 +87,7 @@ public class User {
         this.passWord = passWord;
         this.gender = setGender(gender);
         this.partnerGender = setGender(partnerGender);
+        setInConversation(isInConversation);
         setPersonalityType(personality);
         setOptPartnerPersType(personality);
     }
@@ -91,7 +99,7 @@ public class User {
         this.firstName = firstName;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
