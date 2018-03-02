@@ -16,6 +16,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.codecool.enterpriseproject.util.JsonUtil.toJson;
 import static org.mindrot.jbcrypt.BCrypt.gensalt;
@@ -174,21 +176,17 @@ public class AuthController {
 
     @MessageMapping("/dashboard/{currentId}")
     @SendTo("/dashboard/{currentId}/process")
-    public String messageForwarder(MessageJSON message){
+    public Map messageForwarder(MessageJSON message){
 
-        String messageToForward = message.getMessage();
         User user = userService.findUserById(Long.valueOf(message.getUserId()));
-//        destid = String.valueOf(chatBoxService.getChatBox(user).get(0).getId());
-//        System.out.println(destid);
-        messageService.addMessage(new Message(chatBoxService.getChatBox(user).get(0), new Date(), messageToForward, user));
+        Date date = new Date();
+
+        Map<String,String> messageToForward = new HashMap<>();
+        messageToForward.put("name", user.getFirstName());
+        messageToForward.put("message",message.getMessage());
+        messageToForward.put("date", date.toString());
+
+        messageService.addMessage(new Message(chatBoxService.getChatBox(user).get(0), date, message.getMessage(), user));
         return messageToForward;
     }
-
-//    @RequestMapping(value = "/dashboard/{currentId}/process", method = RequestMethod.GET)
-//    public String messageSaver(Message message){
-//        System.out.println(message);
-//        messageService.addMessage(message);
-//        return toJson(message);
-//    }
-
 }

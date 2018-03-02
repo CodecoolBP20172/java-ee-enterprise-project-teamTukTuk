@@ -11,16 +11,9 @@ function connect() {
         url: "/app/current_chatbox",
         success: function (response) {
             stompClient.connect({}, function () {
-                console.log('Connected');
                 current_id = response;
                 stompClient.subscribe('/dashboard/' + response + "/process", function(message) {
-                    console.log("message " + message);
-                    console.log("messagebody " + message.body);
-                    console.log("messagen " + message.body.n);
-
-                    showMessage(message.body);
-                    // showMessage(JSON.parse(message.body).message);
-
+                    showMessage(message);
                 });
             });
         },
@@ -31,23 +24,28 @@ function connect() {
 }
 
 function sendMessage() {
-    stompClient.send("/app/dashboard/" + current_id , {}, JSON.stringify({'message': $(".message").val(), 'userId': $(".userId").val()}));
-    console.log("Message sent");
 
+    let messageArea = $('.message');
+
+    if(messageArea.val() === ''){
+        return;
+    }
+
+    stompClient.send("/app/dashboard/" + current_id , {}, JSON.stringify({'message': $(".message").val(), 'userId': $(".userId").val()}));
+    messageArea.val('');
 }
 
 function showMessage(message) {
-    console.log("current_id " + current_id);
-    $(".chat").append("<li>" + message + "</li>")
-
-
-    /*    $.ajax({
-        url: "/dashboard/" + current_id + "/process",
-        type: "GET",
-        success: function(response) {
-            $(".chat").append("<li>" + response["message"] + "</li>")
-        }
-    })*/
+    $(".chat").append(`<li class=\"clearfix\">
+    <div class=\"chat-body clearfix\"> 
+        <div class=\"header\">
+            <strong class=\"primary-font\">` + JSON.parse(message.body)["name"] + `</strong>
+            <small class=\"pull-right text-muted\">
+            <span class=\"glyphicon glyphicon-time">` + JSON.parse(message.body)["date"] + `></span></small>
+        </div>
+        <p>` + (JSON.parse(message.body)["message"]) + `</p>
+    </div>
+</li>`);
 }
 
 

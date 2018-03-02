@@ -103,4 +103,10 @@ public class UserController {
         model.addAttribute("user", user);
         return "redirect:/dashboard";
     }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logOut() {
+        session.clear();
+        return "redirect:/";
+    }
 }

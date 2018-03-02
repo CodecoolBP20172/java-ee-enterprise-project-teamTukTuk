@@ -24,4 +24,8 @@ public class UserSession{
     public String getAttribute(String key) {
         return this.session.get(key);
     }
+
+    public void clear() {
+        this.session.clear();
+    }
 }
